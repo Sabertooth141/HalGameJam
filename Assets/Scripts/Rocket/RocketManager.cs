@@ -1,7 +1,19 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
+
+//構造体
+namespace RocketNamespace
+{
+    struct RocketData
+    {
+        public Vector2 position; // 位置
+        public float angle; // 角度
+        public float speed; // 速度
+    }
+}
+
 
 public class RocketManager : MonoBehaviour
 {
@@ -9,18 +21,7 @@ public class RocketManager : MonoBehaviour
     //シングルトン
     //----------------------------
     public static RocketManager Instance { get; private set; }
-    private void Awake()
-    {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-        Instance = this;
 
-        // シーンをまたいでも破棄されないようにしたい場合
-        // DontDestroyOnLoad(gameObject);
-    }
     //----------------------------
     // パラメータ
     //----------------------------
@@ -28,6 +29,11 @@ public class RocketManager : MonoBehaviour
     [Header("ロケットのプレハブ")]
     [SerializeField] private GameObject rocketPrefab; // ロケットのプレハブ
 
+    //----------------------------
+    // 変数
+    //----------------------------
+    //動いているロケットのコントローラーのリスト
+    private readonly HashSet<RocketNamespace.RocketData> history = new HashSet<RocketNamespace.RocketData>();
     //動いているロケットのコントローラーのリスト
     private readonly HashSet<RocketController> active = new HashSet<RocketController>();
     //現在動作中のロケットのコントローラー
@@ -42,6 +48,25 @@ public class RocketManager : MonoBehaviour
     }
     // 現在のロケットの発射状態
     private LaunchState currentLaunchState = LaunchState.Ready;
+
+    //イベントの宣言
+    public event Action OnCreateRocket;
+
+    //----------------------------
+    // 関数
+    //----------------------------
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+
+        // シーンをまたいでも破棄されないようにしたい場合
+        // DontDestroyOnLoad(gameObject);
+    }
 
     //登録
     public void Register(RocketController rocket)
@@ -67,6 +92,7 @@ public class RocketManager : MonoBehaviour
         rocketController.SetParameters(angle, speed);
         currentLaunchState = LaunchState.Launched; // 発射状態を更新
         Current = rocketController; // 新しいロケットを現在のロケットとして設定
+        OnCreateRocket?.Invoke(); // イベントを発火
         return rocketController;
     }
     

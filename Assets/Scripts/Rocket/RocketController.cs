@@ -3,6 +3,10 @@ using UnityEngine;
 
 public class RocketController : MonoBehaviour
 {
+    //----------------------------
+    // パラメータ
+    //----------------------------
+
     [Header("ロケットのパラメータ")]
     [Tooltip("ロケットの現在角度")]
     [SerializeField] private float angle; // 角度
@@ -13,9 +17,15 @@ public class RocketController : MonoBehaviour
 
     // 破棄通知イベント
     public event Action OnDestroyed;
-
+    
+    //----------------------------
+    // 変数
+    //----------------------------
     private bool isDestroyed;
 
+    //----------------------------
+    // 関数
+    //----------------------------
     public void DestroyRocket()
     {
         if (isDestroyed) return;
@@ -36,6 +46,13 @@ public class RocketController : MonoBehaviour
     {
         this.angle = angle;
         this.speed = speed;
+    }
+
+    //角度と速さから速度ベクトルを計算するメソッド
+    public Vector2 CalculateVelocity()
+    {
+        float rad = angle * Mathf.Deg2Rad;
+        return new Vector2(Mathf.Cos(rad), Mathf.Sin(rad)) * speed;
     }
 
     //角度と速さから速度ベクトルを計算するメソッド
