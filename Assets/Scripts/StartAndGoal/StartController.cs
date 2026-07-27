@@ -20,7 +20,7 @@ public class StartController : MonoBehaviour
     //----------------------------
     [Header("ロケットの発射角度")]
     [Tooltip("ロケットの発射角度")]
-    [Range(180f, -180f)]
+    [Range(-180f, 180f)]
     [SerializeField] private float launchAngle = 0f;
     private Vector2 launchVector;       // ロケット発射のベクトル
 

@@ -54,11 +54,4 @@ public class RocketController : MonoBehaviour
         float rad = angle * Mathf.Deg2Rad;
         return new Vector2(Mathf.Cos(rad), Mathf.Sin(rad)) * speed;
     }
-
-    //角度と速さから速度ベクトルを計算するメソッド
-    public Vector2 CalculateVelocity()
-    {
-        float rad = angle * Mathf.Deg2Rad;
-        return new Vector2(Mathf.Cos(rad), Mathf.Sin(rad)) * speed;
-    }
 }
