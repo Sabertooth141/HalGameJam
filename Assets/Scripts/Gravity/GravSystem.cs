@@ -133,4 +133,44 @@ public class GravSystem : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 軌道予測システム用
+    /// </summary>
+    /// <param name="pos">シーンにある天体の位置</param>
+    /// <param name="mass">天体ごとの質量</param>
+    /// <param name="anchored">天体ごとが動けるか</param>
+    /// <param name="acc">天体の加速度</param>
+    /// <param name="bodyCount">天体の数</param>
+    /// <param name="gravConst">重力定数</param>
+    /// <param name="softening">最小距離</param>
+    public static void ComputeAccelerations(Vector2[] pos, float[] mass, bool[] anchored, Vector2[] acc, int bodyCount, float gravConst, float softening)
+    {
+        for (int i = 0;i < bodyCount;i++)
+        {
+            acc[i] = Vector2.zero;
+        }
+
+        float softSqr = softening * softening;
+
+        for (int i = 0; i < bodyCount;i++)
+        {
+            for (int j = i + 1; j < bodyCount;j++)
+            {
+                Vector2 displacement = pos[j] - pos[i];
+                float rSqr = displacement.sqrMagnitude + softSqr;
+                float invRCubed = 1f / (rSqr * Mathf.Sqrt(rSqr));
+                Vector2 unitForce = gravConst * invRCubed * displacement;
+
+                if (!anchored[i])
+                {
+                    acc[i] += unitForce * mass[j];
+                }
+
+                if (!anchored[j])
+                {
+                    acc[j] -= unitForce * mass[i];
+                }
+            }
+        }
+    }
 }
