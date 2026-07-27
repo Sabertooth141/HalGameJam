@@ -120,8 +120,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 381c0f56227ed6a4b8d972fbd2523055, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GravBody
-  mass: 1
+  mass: 0
   velocity: {x: 0, y: 0}
   isAnchored: 0
+  softeningRadius: 0
   position: {x: 0, y: 0}
   acceleration: {x: 0, y: 0}

@@ -14,6 +14,9 @@ public class GravSystem : MonoBehaviour
     [Tooltip("物理システムのステップ数")]
     [Range(1, 16)] public int substeps = 1;
 
+    [Tooltip("外部重力場")]
+    public Vector2 externalField = Vector2.zero;
+
     private static readonly List<GravBody> gravBodies = new List<GravBody>();
     public static IReadOnlyList<GravBody> GravBodies => gravBodies;
 
@@ -104,8 +107,6 @@ public class GravSystem : MonoBehaviour
             gravBodies[i].acceleration = Vector2.zero;
         }
 
-        float softSqr = softening * softening;
-
         for (int i = 0; i < gravBodies.Count; i++)
         {
             GravBody bodyA = gravBodies[i];
@@ -118,6 +119,9 @@ public class GravSystem : MonoBehaviour
                 {
                     continue;
                 }
+
+                float pairSoft = Mathf.Max(softening, Mathf.Max(bodyA.softeningRadius, bodyB.softeningRadius));
+                float softSqr = pairSoft * pairSoft;
 
                 Vector2 displacement = bodyB.position - bodyA.position;
                 float rSqr = displacement.sqrMagnitude + softSqr;
@@ -136,6 +140,13 @@ public class GravSystem : MonoBehaviour
                 }
             }
         }
+
+        if (externalField != Vector2.zero)
+        {
+            for (int i = 0; i < gravBodies.Count; i++)
+                if (!gravBodies[i].isAnchored)
+                    gravBodies[i].acceleration += externalField;
+        }
     }
 
     /// <summary>
@@ -148,7 +159,7 @@ public class GravSystem : MonoBehaviour
     /// <param name="bodyCount">天体の数</param>
     /// <param name="gravConst">重力定数</param>
     /// <param name="softening">最小距離</param>
-    public static void ComputeAccelerations(Vector2[] pos, float[] mass, bool[] anchored, Vector2[] acc, int bodyCount, float gravConst, float softening)
+    public void ComputeAccelerations(Vector2[] pos, float[] mass, bool[] anchored, Vector2[] acc, int bodyCount, float gravConst, float softening)
     {
         for (int i = 0;i < bodyCount;i++)
         {
@@ -177,5 +188,15 @@ public class GravSystem : MonoBehaviour
                 }
             }
         }
+
+        if (externalField != Vector2.zero)
+        {
+            for (int i = 0; i < bodyCount; i++)
+                if (!anchored[i])
+                { 
+                    gravBodies[i].acceleration += externalField; 
+                }
+        }
     }
+
 }

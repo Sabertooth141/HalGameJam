@@ -1,28 +1,42 @@
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class StartController : MonoBehaviour
 {
+
+    //ロケットの発射方法のモードを管理する変数
+    private enum LaunchMode
+    {
+        Manual, //手動発射モード
+        Automatic, //時間経過で自動発射モード
+        Debug
+    }
+
     //----------------------------
     //シングルトン
     //----------------------------
     public static StartController Instance { get; private set; }
-  
+
     //----------------------------
     // 参照
     //----------------------------
     private RocketManager rocketManager;
     private RocketController rocketController;
     private GravBody rocketGravBody;
+    private Camera cam;
 
     //----------------------------
     // パラメータ
     //----------------------------
     [Header("ロケットの発射角度")]
     [Tooltip("ロケットの発射角度")]
-    [Range(-180f, 180f)]
-    [SerializeField] private float launchAngle = 0f;
-    private Vector2 launchVector;       // ロケット発射のベクトル
+    [Range(-180f, 180f)] [SerializeField] private float launchAngle = 0f;
+
+    [Tooltip("発射角の中心")]
+    [SerializeField] private float baseLaunchAngle = 0f;
+
+    private Vector2 launchVector; // ロケット発射のベクトル
 
     [Tooltip("発射角０を基準とした、ロケットの発射角の範囲")]
     [SerializeField] private float launchAngleRange = 45f;
@@ -30,31 +44,36 @@ public class StartController : MonoBehaviour
     [Tooltip("ロケットの発射初速度")]
     [SerializeField] private float launchSpeed = 45f;
 
+    [Tooltip("ロケットの発射最大初速度")]
+    [SerializeField] private float maxLaunchSpeed = 80f;
+
+    [Tooltip("ロケットの発射最小初速度")]
+    [SerializeField] private float minLaunchSpeed = 5f;
+
+    [Tooltip("マニュアルモードでの発射初速度の変換速度")]
+    [SerializeField] private float launchSpeedChangeMagnitude = 3f;
+
     [Tooltip("軌道予測の参照")]
     [SerializeField] private TrajectoryPredictor trajPredict;
 
     private bool isLaunched = false;
 
-    //ロケットの発射方法のモードを管理する変数
-    enum LaunchMode
-    {
-        Manual, //手動発射モード
-        Automatic //時間経過で自動発射モード
-    }
+    private int launchSpeedChangeSign = 1;
 
     [Header("ロケットの発射方法のモード")]
-    [Tooltip("ロケットの発射方法のモード")]
+    [Tooltip("ロケットの発射方法のモード\n"　+ "Manual: ポインターで発射角度を操作\n" + "Auto: デバッグ用、ゲーム内発射角度操作不能")]
     [SerializeField] private LaunchMode launchMode = LaunchMode.Manual; // 手動発射モードかどうか
 
     //ロケットの発射モードが自動発射モードの場合のみ
     [Tooltip("自動発射モードの発射間隔")]
     [SerializeField] private float autoLaunchInterval = 5f; // 自動発射モードの発射間隔
+
     private float timer = 0f; // タイマー
 
     //----------------------------
     //関数
     //----------------------------
-  
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -62,6 +81,7 @@ public class StartController : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+
         Instance = this;
 
         // シーンをまたいでも破棄されないようにしたい場合
@@ -69,54 +89,133 @@ public class StartController : MonoBehaviour
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void Start()
     {
         //シングルトンの初期化
         rocketManager = RocketManager.Instance;
         rocketController = rocketManager.Current;
         rocketGravBody = rocketController?.GetComponent<GravBody>();
 
+        cam = Camera.main;
+
         if (trajPredict == null)
         {
             trajPredict = GetComponentInChildren<TrajectoryPredictor>();
         }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        timer += Time.deltaTime;
 
         if (launchMode == LaunchMode.Manual)
         {
-            //まだなにもない
+            launchSpeed = minLaunchSpeed;
         }
-        else if (launchMode == LaunchMode.Automatic)
+    }
+
+    // Update is called once per frame
+    private void Update()
+    {
+        timer += Time.deltaTime;
+
+        if (launchMode == LaunchMode.Automatic)
         {
             //自動発射モードの場合、一定時間ごとにロケットを発射する
             if (timer >= autoLaunchInterval)
             {
-                if (rocketController != null)
-                {
-                    rocketController.DestroyRocket(); // 既存のロケットを破棄
-                }
+                if (rocketController != null) rocketController.DestroyRocket(); // 既存のロケットを破棄
 
-                GenerateRocket();
                 Launch();
                 timer = 0f;
-
             }
         }
+
+        HandleInput();
     }
 
     private void FixedUpdate()
     {
         if (trajPredict != null)
         {
-            float launchRad = launchAngle * Mathf.Deg2Rad;
-            Vector2 dir = new Vector2(Mathf.Cos(launchRad), Mathf.Sin(launchRad));
-            trajPredict.SetTargetParam(new Vector2(this.transform.position.x, this.transform.position.y), dir * launchSpeed, new Vector2(0, 0));
+            var launchRad = launchAngle * Mathf.Deg2Rad;
+            var dir = new Vector2(Mathf.Cos(launchRad), Mathf.Sin(launchRad));
+            trajPredict.SetTargetParam(new Vector2(transform.position.x, transform.position.y), dir * launchSpeed,
+                new Vector2(0, 0));
         }
+    }
+
+    private void HandleInput()
+    {
+        if (launchMode is LaunchMode.Manual or LaunchMode.Debug)
+        {
+            AimAtCursor();
+            HandleFiring();
+        }
+    }
+
+    private void HandleFiring()
+    {
+        Keyboard kb = Keyboard.current;
+
+        if (kb == null)
+        {
+            return;
+        }
+
+        if (kb.spaceKey.isPressed)
+        {
+            if (launchMode == LaunchMode.Manual && isLaunched)
+            {
+                return;
+            }
+
+            launchSpeed += launchSpeedChangeSign * launchSpeedChangeMagnitude * Time.deltaTime;
+            if (launchSpeed >= maxLaunchSpeed)
+            {
+                launchSpeedChangeSign = -1;
+            }
+            else if (launchSpeed <= minLaunchSpeed)
+            {
+                launchSpeedChangeSign = 1;
+            }
+        }
+
+        if (kb.spaceKey.wasReleasedThisFrame)
+        {
+            if (launchMode == LaunchMode.Debug)
+            {
+                isLaunched = false;
+            }
+
+            if (isLaunched)
+            {
+                return;
+            }
+
+            Launch();
+            launchSpeed = minLaunchSpeed;
+            isLaunched = true;
+        }
+    }
+
+    private void AimAtCursor()
+    {
+        Mouse mouse = Mouse.current;
+
+        if (mouse == null || cam == null)
+        {
+            return;
+        }
+
+        Vector2 screenPos = mouse.position.ReadValue();
+
+        float depth = Mathf.Abs(cam.transform.position.z - transform.position.z);
+        Vector3 worldPos = cam.ScreenToWorldPoint(new Vector3(screenPos.x, screenPos.y, depth));
+
+        Vector2 dir = (Vector2)worldPos - (Vector2)transform.position;
+
+        if (dir.sqrMagnitude < 0.0001f)
+        {
+            return;
+        }
+
+        SetLaunchAngle(Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg);
     }
 
     //参照を更新
@@ -126,12 +225,19 @@ public class StartController : MonoBehaviour
         rocketGravBody = rocketController?.GetComponent<GravBody>();
     }
 
+    //発射角を絶対値で設定するメソッド
+    public void SetLaunchAngle(float angle)
+    {
+        float deltaAngle = Mathf.DeltaAngle(baseLaunchAngle, angle);
+
+        //発射角の範囲を制限する
+        launchAngle = baseLaunchAngle + Mathf.Clamp(deltaAngle, -launchAngleRange, launchAngleRange);
+    }
+
     //発射角を指定の値ずつ変更するメソッド
     public void ChangeLaunchAngle(float delta)
     {
-        launchAngle += delta;
-        //発射角の範囲を制限する
-        launchAngle = Mathf.Clamp(launchAngle, -launchAngleRange, launchAngleRange);
+        SetLaunchAngle(launchAngle + delta);
     }
 
     //ロケットを生成して発射するメソッド
@@ -141,24 +247,12 @@ public class StartController : MonoBehaviour
         rocketGravBody = rocketController?.GetComponent<GravBody>();
     }
 
-    //能動的にロケットを発射するためのメソッド
-    private void OnFire(InputValue value)
-    {
-        if (value.isPressed)
-        {
-            if (rocketController != null)
-            {
-                rocketController.DestroyRocket(); // 既存のロケットを破棄
-            }
-            GenerateRocket();
-        }
-    }
-
     //ロケットに初速インパルスを与えるためのメソッド
     private void Launch()
     {
-        Vector2 velocity = rocketController.CalculateVelocity();
-        rocketGravBody.AddInpulse(velocity);
+        if (rocketController != null) rocketController.DestroyRocket();
+        GenerateRocket();
+        var velocity = rocketController.CalculateVelocity();
+        rocketGravBody.AddImpulse(velocity);
     }
-
 }

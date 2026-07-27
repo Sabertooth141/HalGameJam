@@ -81,7 +81,7 @@ public class TrajectoryPredictor : MonoBehaviour
         float soft = system.softening;
         float cullSqr = cullingRadius * cullingRadius;
 
-        GravSystem.ComputeAccelerations(pos, mass, anchored, acc, bodies.Count + 1, gConstant, soft);
+        GravSystem.Instance.ComputeAccelerations(pos, mass, anchored, acc, bodies.Count + 1, gConstant, soft);
 
         int drawn = 0;
 
@@ -101,7 +101,7 @@ public class TrajectoryPredictor : MonoBehaviour
                 pos[i] += vel[i] * dt;
             }
 
-            GravSystem.ComputeAccelerations(pos, mass, anchored, acc, bodies.Count + 1, gConstant, soft);
+            GravSystem.Instance.ComputeAccelerations(pos, mass, anchored, acc, bodies.Count + 1, gConstant, soft);
 
             for (int i = 0; i < bodies.Count + 1; i++)
             {

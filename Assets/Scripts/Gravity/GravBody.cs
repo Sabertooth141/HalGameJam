@@ -11,6 +11,9 @@ public class GravBody : MonoBehaviour
     [Tooltip("天体を固定")]
     public bool isAnchored;
 
+    [Tooltip("この天体専用の最小距離。0ならグローバル設定を使う")]
+    public float softeningRadius = 0f;
+
     [HideInInspector] public Vector2 position;
     [HideInInspector] public Vector2 acceleration;
 
@@ -40,7 +43,7 @@ public class GravBody : MonoBehaviour
     /// 運動量を加える
     /// </summary>
     /// <param name="deltaV">速度変動</param>
-    public void AddInpulse(Vector2 deltaV)
+    public void AddImpulse(Vector2 deltaV)
     {
         velocity += deltaV;
     }
