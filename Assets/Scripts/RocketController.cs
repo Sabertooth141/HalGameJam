@@ -11,7 +11,6 @@ public class RocketController : MonoBehaviour
     [Tooltip("ロケットの最大速度")]
     [SerializeField] private float maxSpeed;
 
-
     // 破棄通知イベント
     public event Action OnDestroyed;
 
@@ -39,7 +38,12 @@ public class RocketController : MonoBehaviour
         this.speed = speed;
     }
 
-
+    //角度と速さから速度ベクトルを計算するメソッド
+    public Vector2 CalculateVelocity()
+    {
+        float rad = angle * Mathf.Deg2Rad;
+        return new Vector2(Mathf.Cos(rad), Mathf.Sin(rad)) * speed;
+    }
 
     //////////////////////
     /////後で消すけど、テスト動作として一定速度で移動するようにしておく
@@ -50,6 +54,6 @@ public class RocketController : MonoBehaviour
 
     void Update()
     {
-        Move();
+        //Move();
     }
 }

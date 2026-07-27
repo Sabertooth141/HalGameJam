@@ -22,12 +22,13 @@ public class StartController : MonoBehaviour
     //ロケットマネージャーへの参照
     private RocketManager rocketManager;
     private RocketController rocketController;
+    private GravBody rocketGravBody;
 
     [Header("ロケットの発射角度")]
     [Tooltip("ロケットの発射角度")]
     [Range(180f, -180f)]
     [SerializeField] private float launchAngle = 0f;
-    
+
     [Tooltip("発射角０を基準とした、ロケットの発射角の範囲")]
     [SerializeField] private float launchAngleRange = 45f;
 
@@ -56,6 +57,8 @@ public class StartController : MonoBehaviour
     {
         //シングルトンの初期化
         rocketManager = RocketManager.Instance;
+        rocketController = rocketManager.Current;
+        rocketGravBody = rocketController?.GetComponent<GravBody>();
     }
 
     // Update is called once per frame
@@ -63,25 +66,26 @@ public class StartController : MonoBehaviour
     {
         timer += Time.deltaTime;
 
-        if (launchMode == LaunchMode.Automatic)
+        if (launchMode == LaunchMode.Manual)
+        {
+            //まだなにもない
+        }
+        else if (launchMode == LaunchMode.Automatic)
         {
             //自動発射モードの場合、一定時間ごとにロケットを発射する
-            //if (rocketController == null)
-            //{
-                if (timer >= autoLaunchInterval)
+            if (timer >= autoLaunchInterval)
+            {
+                if (rocketController != null)
                 {
-                    GenerateRocket();
-                    timer = 0f;
+                    rocketController.DestroyRocket(); // 既存のロケットを破棄
                 }
-            //}
-        }
-    }
 
-    // 発射角のセッターとゲッター
-    public float LaunchAngle
-    {
-        get { return launchAngle; }
-        set { launchAngle = value; }
+                GenerateRocket();
+                Launch();
+                timer = 0f;
+
+            }
+        }
     }
 
     //発射角を指定の値ずつ変更するメソッド
@@ -92,18 +96,31 @@ public class StartController : MonoBehaviour
         launchAngle = Mathf.Clamp(launchAngle, -launchAngleRange, launchAngleRange);
     }
 
-    // 発射初速度のセッターとゲッター
-    public float LaunchSpeed
-    {
-        get { return launchSpeed; }
-        set { launchSpeed = value; }
-    }
-
     //ロケットを生成して発射するメソッド
     private void GenerateRocket()
     {
         rocketController = rocketManager.CreateRocket(transform.position, launchAngle, launchSpeed);
+        rocketGravBody = rocketController?.GetComponent<GravBody>();
     }
 
+    //能動的にロケットを発射するためのメソッド
+    private void OnFire(InputValue value)
+    {
+        if (value.isPressed)
+        {
+            if (rocketController != null)
+            {
+                rocketController.DestroyRocket(); // 既存のロケットを破棄
+            }
+            GenerateRocket();
+        }
+    }
+
+    //ロケットに初速インパルスを与えるためのメソッド
+    private void Launch()
+    {
+        Vector2 velocity = rocketController.CalculateVelocity();
+        rocketGravBody.AddInpulse(velocity);
+    }
 
 }
