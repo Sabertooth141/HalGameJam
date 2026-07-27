@@ -3,7 +3,9 @@ using UnityEngine.InputSystem;
 
 public class StartController : MonoBehaviour
 {
+    //----------------------------
     //シングルトン
+    //----------------------------
     public static StartController Instance { get; private set; }
     private void Awake()
     {
@@ -18,12 +20,15 @@ public class StartController : MonoBehaviour
         // DontDestroyOnLoad(gameObject);
     }
     //----------------------------
-
-    //ロケットマネージャーへの参照
+    // 参照
+    //----------------------------
     private RocketManager rocketManager;
     private RocketController rocketController;
     private GravBody rocketGravBody;
 
+    //----------------------------
+    // パラメータ
+    //----------------------------
     [Header("ロケットの発射角度")]
     [Tooltip("ロケットの発射角度")]
     [Range(180f, -180f)]
@@ -51,6 +56,9 @@ public class StartController : MonoBehaviour
     [SerializeField] private float autoLaunchInterval = 5f; // 自動発射モードの発射間隔
     private float timer = 0f; // タイマー
 
+    //----------------------------
+    //関数
+    //----------------------------
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -86,6 +94,13 @@ public class StartController : MonoBehaviour
 
             }
         }
+    }
+
+    //参照を更新
+    private void SetRocketControllerRef()
+    {
+        rocketController = rocketManager.Current;
+        rocketGravBody = rocketController?.GetComponent<GravBody>();
     }
 
     //発射角を指定の値ずつ変更するメソッド

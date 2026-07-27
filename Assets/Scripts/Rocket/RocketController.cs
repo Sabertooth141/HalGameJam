@@ -44,16 +44,4 @@ public class RocketController : MonoBehaviour
         float rad = angle * Mathf.Deg2Rad;
         return new Vector2(Mathf.Cos(rad), Mathf.Sin(rad)) * speed;
     }
-
-    //////////////////////
-    /////後で消すけど、テスト動作として一定速度で移動するようにしておく
-    public void Move()
-    {
-        transform.Translate(Vector2.right * speed * Time.deltaTime);
-    }
-
-    void Update()
-    {
-        //Move();
-    }
 }

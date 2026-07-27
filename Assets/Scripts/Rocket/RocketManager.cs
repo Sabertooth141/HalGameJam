@@ -7,6 +7,7 @@ public class RocketManager : MonoBehaviour
 {
     //----------------------------
     //シングルトン
+    //----------------------------
     public static RocketManager Instance { get; private set; }
     private void Awake()
     {
@@ -21,7 +22,8 @@ public class RocketManager : MonoBehaviour
         // DontDestroyOnLoad(gameObject);
     }
     //----------------------------
-
+    // パラメータ
+    //----------------------------
     //ロケットのプレハブを格納する変数
     [Header("ロケットのプレハブ")]
     [SerializeField] private GameObject rocketPrefab; // ロケットのプレハブ
@@ -38,6 +40,8 @@ public class RocketManager : MonoBehaviour
         Launched, //発射済み
         Landed //着地済み
     }
+    // 現在のロケットの発射状態
+    private LaunchState currentLaunchState = LaunchState.Ready;
 
     //登録
     public void Register(RocketController rocket)
@@ -61,6 +65,7 @@ public class RocketManager : MonoBehaviour
         var rocketController = rocketObj.GetComponent<RocketController>();
         Register(rocketController);
         rocketController.SetParameters(angle, speed);
+        currentLaunchState = LaunchState.Launched; // 発射状態を更新
         Current = rocketController; // 新しいロケットを現在のロケットとして設定
         return rocketController;
     }

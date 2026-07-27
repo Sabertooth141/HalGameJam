@@ -2,7 +2,9 @@ using UnityEngine;
 
 public class GoalController : MonoBehaviour
 {
+    //----------------------------
     //シングルトン
+    //----------------------------
     public static GoalController Instance { get; private set; }
     private void Awake()
     {
@@ -17,20 +19,24 @@ public class GoalController : MonoBehaviour
         // DontDestroyOnLoad(gameObject);
     }
     //----------------------------
+    // 参照
+    //----------------------------
+    //現在のロケットコントローラーへの参照
+    private RocketController rocketController;
 
-    [Header("発射されていて、進行中かどうか")]
-    [SerializeField] private bool isMoving = false;
 
+    //----------------------------
+    // 関数
+    //----------------------------
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        rocketController = RocketManager.Instance.Current;
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        rocketController = RocketManager.Instance.Current;
     }
 }
