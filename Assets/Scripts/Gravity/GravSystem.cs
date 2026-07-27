@@ -114,6 +114,11 @@ public class GravSystem : MonoBehaviour
             {
                 GravBody bodyB = gravBodies[j];
 
+                if (bodyA.tag == "Player" && bodyB.tag == "Player")
+                {
+                    continue;
+                }
+
                 Vector2 displacement = bodyB.position - bodyA.position;
                 float rSqr = displacement.sqrMagnitude + softSqr;
                 float invRCubed = 1f / (rSqr * Mathf.Sqrt(rSqr));

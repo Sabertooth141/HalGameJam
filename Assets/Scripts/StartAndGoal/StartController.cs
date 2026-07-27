@@ -7,18 +7,7 @@ public class StartController : MonoBehaviour
     //シングルトン
     //----------------------------
     public static StartController Instance { get; private set; }
-    private void Awake()
-    {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-        Instance = this;
-
-        // シーンをまたいでも破棄されないようにしたい場合
-        // DontDestroyOnLoad(gameObject);
-    }
+  
     //----------------------------
     // 参照
     //----------------------------
@@ -33,12 +22,18 @@ public class StartController : MonoBehaviour
     [Tooltip("ロケットの発射角度")]
     [Range(180f, -180f)]
     [SerializeField] private float launchAngle = 0f;
+    private Vector2 launchVector;       // ロケット発射のベクトル
 
     [Tooltip("発射角０を基準とした、ロケットの発射角の範囲")]
     [SerializeField] private float launchAngleRange = 45f;
 
     [Tooltip("ロケットの発射初速度")]
     [SerializeField] private float launchSpeed = 45f;
+
+    [Tooltip("軌道予測の参照")]
+    [SerializeField] private TrajectoryPredictor trajPredict;
+
+    private bool isLaunched = false;
 
     //ロケットの発射方法のモードを管理する変数
     enum LaunchMode
@@ -59,6 +54,19 @@ public class StartController : MonoBehaviour
     //----------------------------
     //関数
     //----------------------------
+  
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+
+        // シーンをまたいでも破棄されないようにしたい場合
+        // DontDestroyOnLoad(gameObject);
+    }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -67,6 +75,11 @@ public class StartController : MonoBehaviour
         rocketManager = RocketManager.Instance;
         rocketController = rocketManager.Current;
         rocketGravBody = rocketController?.GetComponent<GravBody>();
+
+        if (trajPredict == null)
+        {
+            trajPredict = GetComponentInChildren<TrajectoryPredictor>();
+        }
     }
 
     // Update is called once per frame
@@ -93,6 +106,16 @@ public class StartController : MonoBehaviour
                 timer = 0f;
 
             }
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        if (trajPredict != null)
+        {
+            float launchRad = launchAngle * Mathf.Deg2Rad;
+            Vector2 dir = new Vector2(Mathf.Cos(launchRad), Mathf.Sin(launchRad));
+            trajPredict.SetTargetParam(new Vector2(this.transform.position.x, this.transform.position.y), dir * launchSpeed, new Vector2(0, 0));
         }
     }
 

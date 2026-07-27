@@ -9,7 +9,7 @@ public class TrajectoryPredictor : MonoBehaviour
 
     [Range(20, 3000)] public int lookaheadSteps = 600;
 
-    [Range(1, 20)] public int stepsPerPt = 20;
+    [Range(1, 20)] public int stepsPerPt = 5;
 
     public float cullingRadius = 600f;
 
@@ -21,15 +21,12 @@ public class TrajectoryPredictor : MonoBehaviour
     private Vector3[] points;
     private int targetIndex;
 
+    private Vector2 targetPos, targetVel, targetAcc;
+
     private void Awake()
     {
         line = GetComponent<LineRenderer>();
         line.useWorldSpace = true;
-
-        if (target == null)
-        {
-            target = GetComponentInParent<GravBody>();
-        }
     }
 
     private void LateUpdate()
@@ -37,14 +34,14 @@ public class TrajectoryPredictor : MonoBehaviour
         IReadOnlyList<GravBody> bodies = GravSystem.GravBodies;
         GravSystem system = GravSystem.Instance;
 
-        if (target == null || system == null || bodies == null)
+        if (system == null || bodies == null)
         {
             line.positionCount = 0;
             return;
         }
 
         // バッファサイズを確保
-        EnsureBuffers(bodies.Count);
+        EnsureBuffers(bodies.Count + 1);
 
         targetIndex = -1;
 
@@ -64,8 +61,18 @@ public class TrajectoryPredictor : MonoBehaviour
 
         if (targetIndex < 0)
         {
-            line.positionCount = 0;
-            return;
+            if (targetPos == null && targetAcc == null && targetVel == null)
+            {
+                line.positionCount = 0;
+                return;
+            }
+
+            pos[bodies.Count] = targetPos;
+            acc[bodies.Count] = targetAcc;
+            vel[bodies.Count] = targetVel;
+            mass[bodies.Count] = 1;
+            anchored[bodies.Count] = false;
+            targetIndex = bodies.Count;
         }
 
         float dt = Time.fixedDeltaTime / Mathf.Max(1, system.substeps);
@@ -74,7 +81,7 @@ public class TrajectoryPredictor : MonoBehaviour
         float soft = system.softening;
         float cullSqr = cullingRadius * cullingRadius;
 
-        GravSystem.ComputeAccelerations(pos, mass, anchored, acc, bodies.Count, gConstant, soft);
+        GravSystem.ComputeAccelerations(pos, mass, anchored, acc, bodies.Count + 1, gConstant, soft);
 
         int drawn = 0;
 
@@ -83,7 +90,7 @@ public class TrajectoryPredictor : MonoBehaviour
         //仮物理を計算する
         for (int step = 1; step <= lookaheadSteps; step++)
         {
-            for (int i = 0; i < bodies.Count; i++)
+            for (int i = 0; i < bodies.Count + 1; i++)
             {
                 if (anchored[i])
                 {
@@ -94,9 +101,9 @@ public class TrajectoryPredictor : MonoBehaviour
                 pos[i] += vel[i] * dt;
             }
 
-            GravSystem.ComputeAccelerations(pos, mass, anchored, acc, bodies.Count, gConstant, soft);
+            GravSystem.ComputeAccelerations(pos, mass, anchored, acc, bodies.Count + 1, gConstant, soft);
 
-            for (int i = 0; i < bodies.Count; i++)
+            for (int i = 0; i < bodies.Count + 1; i++)
             {
                 if (anchored[i]) continue;
                 vel[i] += acc[i] * halfStep;
@@ -123,6 +130,13 @@ public class TrajectoryPredictor : MonoBehaviour
 
         line.positionCount = drawn;
         line.SetPositions(points);
+    }
+
+    public void SetTargetParam(Vector2 inPos, Vector2 inVel, Vector2 inAcc)
+    {
+        targetAcc = inAcc;
+        targetVel = inVel;
+        targetPos = inPos;
     }
 
     Vector3 ToVec3(Vector2 p)

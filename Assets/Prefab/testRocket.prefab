@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 3763799339549930054}
   m_Layer: 0
   m_Name: testRocket
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -106,7 +106,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RocketController
   angle: 0
-  speed: 0
+  speed: 10
   maxSpeed: 0
 --- !u!114 &3763799339549930054
 MonoBehaviour:
