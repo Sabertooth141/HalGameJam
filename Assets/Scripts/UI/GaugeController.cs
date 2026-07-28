@@ -64,16 +64,5 @@ public class GaugeController : MonoBehaviour
         Vector3 arrowPos = arrowImg.rectTransform.localPosition;
         arrowPos.y = arrowPosY;
         arrowImg.rectTransform.localPosition = arrowPos;
-
-        //ゲージの上限位置と下限位置をデバッグログに出力
-        float gaugeHeight = gaugeImg.rectTransform.rect.height;
-
-        Debug.Log($"Arrow Move Y: {arrowPosY}, Speed: {speed}, Max Speed: {maxSpeed}, Gauge Height: {gaugeHeight}, Gauge Offset: {gaugeOffset}," +
-            $" arrowInitialPosition.Y: {arrowInitialPosition.y}, arrowPos.Y: {arrowPos.y}, Gauge Y Max: {gaugeMaxY}, Gauge Y Min: {gaugeMinY}");
-
-        if (Keyboard.current.spaceKey.isPressed && Keyboard.current.vKey.wasPressedThisFrame)
-        {
-            Debug.Break();
-        }
     }
 }

@@ -18,14 +18,24 @@ public class SceneTransitioner : MonoBehaviour
     // 列挙型
     //----------------------------
     //シーン名列挙型
+    //※必ずシーンのビルドインデックスと同じ順番にすること！
     public enum SceneName
     {
         Title = 0,
         StageSelect = 1,
         Result = 2,
+        SampleScene1, //テスト用のサンプルシーン
+        SampleScene2, //テスト用のサンプルシーン2
 
-        SampleScene1 = 3, //テスト用のサンプルシーン
-        SampleScene2 = 4, //テスト用のサンプルシーン2
+        Stage1, 
+        Stage2, 
+        Stage3, 
+        Stage4, 
+        Stage5, 
+        Stage6, 
+        Stage7, 
+        Stage8, 
+        Stage9,
     }
 
     //----------------------------
