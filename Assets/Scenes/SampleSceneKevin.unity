@@ -1541,41 +1541,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2779572315944363648, guid: ac1133b132ed60c4d926c689e3dc330b, type: 3}
-      propertyPath: stepsPerPt
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2779572315944363648, guid: ac1133b132ed60c4d926c689e3dc330b, type: 3}
-      propertyPath: scrollSpeed
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 2779572315944363648, guid: ac1133b132ed60c4d926c689e3dc330b, type: 3}
-      propertyPath: scrollForward
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2779572315944363648, guid: ac1133b132ed60c4d926c689e3dc330b, type: 3}
-      propertyPath: textureTiling
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 4876621757362601065, guid: ac1133b132ed60c4d926c689e3dc330b, type: 3}
       propertyPath: m_Name
       value: Start
-      objectReference: {fileID: 0}
-    - target: {fileID: 5788830507905606618, guid: ac1133b132ed60c4d926c689e3dc330b, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 2100000, guid: 2bcf60c65b7ec8548adad8347a41f9b0, type: 2}
-    - target: {fileID: 5788830507905606618, guid: ac1133b132ed60c4d926c689e3dc330b, type: 3}
-      propertyPath: m_Parameters.colorGradient.key0.b
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5788830507905606618, guid: ac1133b132ed60c4d926c689e3dc330b, type: 3}
-      propertyPath: m_Parameters.colorGradient.key0.g
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5788830507905606618, guid: ac1133b132ed60c4d926c689e3dc330b, type: 3}
-      propertyPath: m_Parameters.colorGradient.key0.r
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
