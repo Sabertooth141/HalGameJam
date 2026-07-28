@@ -67,11 +67,14 @@ public class StageSelect : MonoBehaviour
     //ロケットの位置とステージ選択星の位置を比較して近かったらゴールにする
     private void CheckSelected(Vector2 rocketPos)
     {
+
         Vector2 goalPos = new Vector2(transform.position.x, transform.position.y);
         float distance = Vector2.Distance(rocketPos, goalPos);
         if (distance < radius) // 半径を使用
         {
+            rocketController.GetComponent<GravBody>().velocity = Vector2.zero; // ロケットの速度をゼロにする
             Debug.Log("Goal!");
+            //シーン遷移のモードに応じてシーンを切り替える
             switch (transitionMode)
             {
                 case TransitionMode.NoEffect:
