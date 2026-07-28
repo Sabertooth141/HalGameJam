@@ -1076,7 +1076,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a715feaa9889964cbb25e88df4cdd27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GravField
-  direction: {x: 0, y: 1}
+  direction: {x: 0, y: 30}
 --- !u!1 &1812798802
 GameObject:
   m_ObjectHideFlags: 0
@@ -1606,6 +1606,22 @@ PrefabInstance:
     - target: {fileID: 1059791318843652512, guid: ac1133b132ed60c4d926c689e3dc330b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2779572315944363648, guid: ac1133b132ed60c4d926c689e3dc330b, type: 3}
+      propertyPath: stepsPerPt
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2779572315944363648, guid: ac1133b132ed60c4d926c689e3dc330b, type: 3}
+      propertyPath: scrollSpeed
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2779572315944363648, guid: ac1133b132ed60c4d926c689e3dc330b, type: 3}
+      propertyPath: scrollForward
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2779572315944363648, guid: ac1133b132ed60c4d926c689e3dc330b, type: 3}
+      propertyPath: textureTiling
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4876621757362601065, guid: ac1133b132ed60c4d926c689e3dc330b, type: 3}
       propertyPath: m_Name
