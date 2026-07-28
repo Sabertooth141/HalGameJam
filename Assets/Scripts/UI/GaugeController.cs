@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 
 public class GaugeController : MonoBehaviour
 {
@@ -23,8 +24,9 @@ public class GaugeController : MonoBehaviour
     //----------------------------
     // アローの初期位置を保持する変数
     private Vector3 arrowInitialPosition;
-    // ゲージの高さを保持する変数
-    private float gaugeHeight;
+    // ゲージの上下限界位置を保持する変数
+    private float gaugeMaxY;
+    private float gaugeMinY; 
 
     //----------------------------
     // 関数
@@ -35,8 +37,9 @@ public class GaugeController : MonoBehaviour
     {
         // アローの初期位置を保存
         arrowInitialPosition = arrowImg.rectTransform.localPosition;
-        // ゲージの高さを保存
-        gaugeHeight = gaugeImg.rectTransform.rect.height;
+        // ゲージの上下限界位置を計算
+        gaugeMaxY = gaugeImg.rectTransform.localPosition.y + gaugeImg.rectTransform.rect.height / 2;
+        gaugeMinY = gaugeImg.rectTransform.localPosition.y - gaugeImg.rectTransform.rect.height / 2;
     }
 
     // Update is called once per frame
@@ -44,18 +47,33 @@ public class GaugeController : MonoBehaviour
     {
         // StartControllerから速度を取得してアローの位置を更新
         StartController startCon = StartController.Instance;
-        UpdateArrowPosition(startCon.LaunchSpeed, startCon.MaxLaunchSpeed);
+        UpdateArrowPosition(startCon.LaunchSpeed, startCon.MaxLaunchSpeed, startCon.MinLaunchSpeed);
     }
 
     //アローの位置を更新する関数
-    private void UpdateArrowPosition(float speed, float maxSpeed)
+    private void UpdateArrowPosition(float speed, float maxSpeed, float minSpeed)
     {
+        // アローの最低位置を計算
+        float arrowMinY = gaugeMinY + gaugeOffset;
+        // ゲージのうち、アローの動く範囲を計算
+        float movableRange = gaugeMaxY - gaugeOffset - arrowMinY;
         // アローの位置を計算
-        float arrowMoveY = Mathf.Clamp((speed / maxSpeed) * gaugeHeight, 0f + gaugeOffset, gaugeHeight - gaugeOffset);
+        float arrowPosY = arrowMinY + Mathf.Clamp(((speed - minSpeed) / (maxSpeed - minSpeed)) * movableRange, 0f, movableRange);
 
         // アローの位置を更新
-        Vector3 arrowPos = arrowInitialPosition;
-        arrowPos.y += arrowMoveY;
+        Vector3 arrowPos = arrowImg.rectTransform.localPosition;
+        arrowPos.y = arrowPosY;
         arrowImg.rectTransform.localPosition = arrowPos;
+
+        //ゲージの上限位置と下限位置をデバッグログに出力
+        float gaugeHeight = gaugeImg.rectTransform.rect.height;
+
+        Debug.Log($"Arrow Move Y: {arrowPosY}, Speed: {speed}, Max Speed: {maxSpeed}, Gauge Height: {gaugeHeight}, Gauge Offset: {gaugeOffset}," +
+            $" arrowInitialPosition.Y: {arrowInitialPosition.y}, arrowPos.Y: {arrowPos.y}, Gauge Y Max: {gaugeMaxY}, Gauge Y Min: {gaugeMinY}");
+
+        if (Keyboard.current.spaceKey.isPressed && Keyboard.current.vKey.wasPressedThisFrame)
+        {
+            Debug.Break();
+        }
     }
 }
