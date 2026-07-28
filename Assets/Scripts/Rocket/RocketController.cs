@@ -1,9 +1,11 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(GravBody))]
 public class RocketController : MonoBehaviour
 {
+    private static readonly int Explode = Animator.StringToHash("Explode");
     //----------------------------
     // パラメータ
     //----------------------------
@@ -15,6 +17,10 @@ public class RocketController : MonoBehaviour
     [SerializeField] private float speed; // 速度
     [Tooltip("ロケットの最大速度")]
     [SerializeField] private float maxSpeed;
+
+    [SerializeField] private Animator anim;
+    [SerializeField] private float explodeLen = 0.6f;
+    [SerializeField] private GameObject rocketSprite;
 
     private GravBody gravBody;
 
@@ -43,6 +49,16 @@ public class RocketController : MonoBehaviour
         if (gravBody == null)
         {
             Debug.LogWarning($"{name}: gravbody not found", this);
+        }
+
+        if (anim == null)
+        {
+            Debug.LogWarning($"{name}: animator not found", this);
+        }
+
+        if (rocketSprite == null)
+        {
+            Debug.LogWarning($"{name}: rocketSprite not found", this);
         }
 
     }
@@ -99,5 +115,37 @@ public class RocketController : MonoBehaviour
         Quaternion rot = Quaternion.Euler(0f, 0f, facingAngle);
 
         transform.rotation = Quaternion.RotateTowards(transform.rotation, rot, 150 * Time.deltaTime);
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (!this.CompareTag("Player"))
+        {
+            return;
+        }
+
+        if (isDestroyed)
+        {
+            return;
+        }
+
+        if (other.CompareTag("GravField") || other.CompareTag("Player"))
+        {
+            return;
+        }
+
+        gravBody.isAnchored = true;
+        gravBody.velocity = Vector2.zero;
+        GetComponent<BoxCollider2D>().enabled = false;
+        
+        anim.SetTrigger(Explode);
+        rocketSprite.SetActive(false);
+        StartCoroutine(AfterExplosion());
+    }
+
+    IEnumerator AfterExplosion()
+    {
+        yield return new WaitForSecondsRealtime(explodeLen);
+        GameController.Instance.RestartScene();
     }
 }
