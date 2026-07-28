@@ -60,19 +60,4 @@ public class GravBody : MonoBehaviour
     {
         return orbitingBody;
     }
-
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        if (!this.CompareTag("Player"))
-        {
-            return;
-        }
-
-        if (other.CompareTag("GravField"))
-        {
-            return;
-        }
-
-        GameController.Instance.RestartScene();
-    }
 }

@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -118,6 +117,14 @@ public class GameController : MonoBehaviour
         hasLoaded = true;
         Debug.Log("RestartScene:\n" + System.Environment.StackTrace);
         Time.timeScale = 1f;
+        if (SceneTransitioner.Instance.GetCurrentScene(SceneTransitioner.SceneName.StageSelect))
+        {
+            //シーンがStageSelectの場合は、シーンをリロードせずに遷移する
+            isTransitioning = false;
+            hasLoaded = false;
+            videoOverlay.SetActive(false);
+            return;
+        }
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 

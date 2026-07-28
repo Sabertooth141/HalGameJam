@@ -21,7 +21,6 @@ public class GoalController : MonoBehaviour
     //現在のロケットコントローラーへの参照
     private RocketController rocketController;
 
-
     //----------------------------
     // 変数
     //----------------------------
@@ -74,6 +73,7 @@ public class GoalController : MonoBehaviour
         if (distance < goalRadius) // ゴールの半径を使用
         {
             isGoal = true;
+            rocketController.GetComponent<GravBody>().velocity = Vector2.zero; // ロケットの速度をゼロにする
             Debug.Log("Goal!");
             SceneTransitioner.Instance.LoadSceneSlide(SceneTransitioner.SceneName.SampleScene1);
         }
