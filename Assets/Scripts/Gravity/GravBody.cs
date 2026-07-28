@@ -68,6 +68,11 @@ public class GravBody : MonoBehaviour
             return;
         }
 
+        if (other.CompareTag("GravField"))
+        {
+            return;
+        }
+
         GameController.Instance.RestartScene();
     }
 }

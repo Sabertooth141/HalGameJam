@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 
+[RequireComponent(typeof(GravBody))]
 public class RocketController : MonoBehaviour
 {
     //----------------------------
@@ -14,6 +15,8 @@ public class RocketController : MonoBehaviour
     [SerializeField] private float speed; // 速度
     [Tooltip("ロケットの最大速度")]
     [SerializeField] private float maxSpeed;
+
+    private GravBody gravBody;
 
     // 破棄通知イベント
     public event Action OnDestroyed;
@@ -34,6 +37,19 @@ public class RocketController : MonoBehaviour
     private void Update()
     {
         SceneController.Instance.SetRocketPos(this.transform.position);
+
+        gravBody = GetComponent<GravBody>();
+
+        if (gravBody == null)
+        {
+            Debug.LogWarning($"{name}: gravbody not found", this);
+        }
+
+    }
+
+    private void LateUpdate()
+    {
+        ChangeSpriteRotation();
     }
 
     public void DestroyRocket()
@@ -63,5 +79,25 @@ public class RocketController : MonoBehaviour
     {
         float rad = angle * Mathf.Deg2Rad;
         return new Vector2(Mathf.Cos(rad), Mathf.Sin(rad)) * speed;
+    }
+
+    private void ChangeSpriteRotation()
+    {
+        if (gravBody == null)
+        {
+            return;
+        }
+
+        if (gravBody.velocity.magnitude < 0.001)
+        {
+            return;
+        }
+
+        Vector2 currDir = gravBody.velocity.normalized;
+
+        float facingAngle = Mathf.Atan2(currDir.y, currDir.x) * Mathf.Rad2Deg;
+        Quaternion rot = Quaternion.Euler(0f, 0f, facingAngle);
+
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, rot, 150 * Time.deltaTime);
     }
 }

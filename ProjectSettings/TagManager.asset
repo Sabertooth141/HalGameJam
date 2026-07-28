@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Planet
   - Satellite
+  - GravField
   layers:
   - Default
   - TransparentFX
