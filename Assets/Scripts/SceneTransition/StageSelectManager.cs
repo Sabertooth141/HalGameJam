@@ -6,13 +6,27 @@ using UnityEngine.InputSystem;
 
 public class StageSelectManager : MonoBehaviour
 {
+
+    //----------------------------
+    // 定数
+    //----------------------------
+    private const float TwoPi = Mathf.PI * 2f;
+
+    private const float InitialAngle = 135.0f; // 初期角度（度）
+
     //----------------------------
     // パラメータ
     //----------------------------
-    [Header("ステージ選択の半径と回転角")]
+    [Header("ステージ選択円の半径と初期角度")]
     [Tooltip("ステージ選択が並ぶ円の半径")]
     [Min(0f)]
     [SerializeField] private float radius = 5f;
+
+    [Tooltip("初期角度のオフセット（度）")]
+    [Range(0f, 360f)]
+    [SerializeField] private float InitialAngleOffset = 0f;
+
+    [Header("ステージ選択の回転角")]
     [Tooltip("ステージ選択の一回の操作での回転角")]
     [Range(0f, 360f)]
     [SerializeField] private float angle = 45f;
@@ -25,6 +39,8 @@ public class StageSelectManager : MonoBehaviour
     [Min(0f)]
     [SerializeField] private float rotateDuration = 0.5f;
 
+
+
     //----------------------------
     // 変数
     //----------------------------
@@ -33,6 +49,8 @@ public class StageSelectManager : MonoBehaviour
 
     //子オブジェクトへの参照を格納する配列
     private List<Transform> stageSelects = new List<Transform>();
+
+    //デフォルトの初期角度を保持する変数
 
     //----------------------------
     // イベント
@@ -62,7 +80,7 @@ public class StageSelectManager : MonoBehaviour
         }
 
         // 子オブジェクトを円形に配置
-        ArrangeChildrenInCircle(radius);
+        ArrangeChildrenInCircle(radius, InitialAngle + InitialAngleOffset);
 
         // 回転イベントにメソッドを登録
         OnStageLotate += RotateCircle;
@@ -104,21 +122,21 @@ public class StageSelectManager : MonoBehaviour
         // 子オブジェクトが配置される位置に円を描画
         for (int i = 0; i < childCount; i++)
         {
-            float angle = i * Mathf.PI * 2f / childCount;
+            float angle = i * TwoPi / childCount;
             Vector3 newPos = new Vector3(Mathf.Cos(angle) * radius, Mathf.Sin(angle) * radius, 0);
             Gizmos.DrawSphere(transform.position + newPos, 0.1f);
         }
     }
 
 
-    //子オブジェクトを円形に再配置するメソッド
-    private void ArrangeChildrenInCircle(float radius)
+    //子オブジェクトを円形に再配置するメソッド(時計周り)
+    private void ArrangeChildrenInCircle(float radius, float initialAngle)
     {
         // 子オブジェクトを円形に配置
         for (int i = 0; i < childCount; i++)
         {
             Transform child = stageSelects[i];
-            float angle = i * Mathf.PI * 2f / childCount;
+            float angle = -(i * Mathf.PI * 2f / childCount) + initialAngle * Mathf.Deg2Rad;
             Vector3 newPos = new Vector3(Mathf.Cos(angle) * radius, Mathf.Sin(angle) * radius, 0);
             child.localPosition = newPos;
         }
