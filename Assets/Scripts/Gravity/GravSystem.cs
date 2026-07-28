@@ -17,7 +17,7 @@ public class GravSystem : MonoBehaviour
     [Tooltip("外部重力場")]
     public Vector2 externalField = Vector2.zero;
 
-    private static readonly List<GravBody> gravBodies = new List<GravBody>();
+    private static readonly List<GravBody> gravBodies = new();
     public static IReadOnlyList<GravBody> GravBodies => gravBodies;
 
     public static void Register(GravBody inGravBody)
@@ -36,13 +36,19 @@ public class GravSystem : MonoBehaviour
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void Start()
     {
-        ComputeAccelerations();   
+        ComputeAccelerations();
     }
 
     private void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         Instance = this;
     }
 
@@ -102,7 +108,7 @@ public class GravSystem : MonoBehaviour
     private void ComputeAccelerations()
     {
         //天体ごとの加速度をクリア
-        for (int i = 0; i < gravBodies.Count;i++)
+        for (int i = 0; i < gravBodies.Count; i++)
         {
             gravBodies[i].acceleration = Vector2.zero;
         }
@@ -115,7 +121,13 @@ public class GravSystem : MonoBehaviour
             {
                 GravBody bodyB = gravBodies[j];
 
-                if (bodyA.tag == "Player" && bodyB.tag == "Player")
+                if (bodyA.CompareTag("Player") && bodyB.CompareTag("Player"))
+                {
+                    continue;
+                }
+
+                if (bodyA.CompareTag("Satellite") && bodyA.GetOrbitingBody() != bodyB ||
+                    bodyB.CompareTag("Satellite") && bodyB.GetOrbitingBody() != bodyA)
                 {
                     continue;
                 }
@@ -161,16 +173,16 @@ public class GravSystem : MonoBehaviour
     /// <param name="softening">最小距離</param>
     public void ComputeAccelerations(Vector2[] pos, float[] mass, bool[] anchored, Vector2[] acc, int bodyCount, float gravConst, float softening)
     {
-        for (int i = 0;i < bodyCount;i++)
+        for (int i = 0; i < bodyCount; i++)
         {
             acc[i] = Vector2.zero;
         }
 
         float softSqr = softening * softening;
 
-        for (int i = 0; i < bodyCount;i++)
+        for (int i = 0; i < bodyCount; i++)
         {
-            for (int j = i + 1; j < bodyCount;j++)
+            for (int j = i + 1; j < bodyCount; j++)
             {
                 Vector2 displacement = pos[j] - pos[i];
                 float rSqr = displacement.sqrMagnitude + softSqr;
@@ -193,10 +205,15 @@ public class GravSystem : MonoBehaviour
         {
             for (int i = 0; i < bodyCount; i++)
                 if (!anchored[i])
-                { 
-                    gravBodies[i].acceleration += externalField; 
+                {
+                    acc[i] += externalField;
                 }
         }
+    }
+
+    public float CircularOrbitSpeed(float centralMass, float orbitalRadius)
+    {
+        return Mathf.Sqrt(gravitationalConstant * centralMass / Mathf.Max(orbitalRadius, 0.001f));
     }
 
 }

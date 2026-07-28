@@ -244,6 +244,7 @@ public class StartController : MonoBehaviour
     private void GenerateRocket()
     {
         rocketController = rocketManager.CreateRocket(transform.position, launchAngle, launchSpeed);
+        rocketController.gameObject.SetActive(true);
         rocketGravBody = rocketController?.GetComponent<GravBody>();
     }
 

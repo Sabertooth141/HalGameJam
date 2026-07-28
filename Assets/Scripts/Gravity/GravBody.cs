@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class GravBody : MonoBehaviour
@@ -13,6 +14,8 @@ public class GravBody : MonoBehaviour
 
     [Tooltip("この天体専用の最小距離。0ならグローバル設定を使う")]
     public float softeningRadius = 0f;
+
+    private GravBody orbitingBody;
 
     [HideInInspector] public Vector2 position;
     [HideInInspector] public Vector2 acceleration;
@@ -46,5 +49,25 @@ public class GravBody : MonoBehaviour
     public void AddImpulse(Vector2 deltaV)
     {
         velocity += deltaV;
+    }
+
+    public void SetOrbitingBody(GravBody inOrbitingBody)
+    {
+        orbitingBody = inOrbitingBody;
+    }
+
+    public GravBody GetOrbitingBody()
+    {
+        return orbitingBody;
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (!this.CompareTag("Player"))
+        {
+            return;
+        }
+
+        GameController.Instance.RestartScene();
     }
 }
