@@ -26,6 +26,16 @@ public class RocketController : MonoBehaviour
     //----------------------------
     // 関数
     //----------------------------
+    private void Awake()
+    {
+        
+    }
+
+    private void Update()
+    {
+        SceneController.Instance.SetRocketPos(this.transform.position);
+    }
+
     public void DestroyRocket()
     {
         if (isDestroyed) return;
@@ -46,13 +56,6 @@ public class RocketController : MonoBehaviour
     {
         this.angle = inAngle;
         this.speed = inSpeed;
-    }
-
-    public void SetParameters(float inAngle, float inSpeed, Vector2 pos)
-    {
-        this.angle = inAngle;
-        this.speed = inSpeed;
-
     }
 
     //角度と速さから速度ベクトルを計算するメソッド
