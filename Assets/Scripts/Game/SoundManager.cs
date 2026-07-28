@@ -22,7 +22,7 @@ public class SoundManager : MonoBehaviour
     {
         if (Instance != null && Instance != this)
         {
-            Destroy(this);
+            Destroy(gameObject);
             return;
         }
 
@@ -38,7 +38,7 @@ public class SoundManager : MonoBehaviour
     public void Play(string inName)
     {
         Sound sound = Array.Find(sounds, x => x.name == inName);
-
+        sfxSource.pitch = 1f;
         if (sound == null)
         {
             Debug.LogWarning($"Sound not found {inName}");

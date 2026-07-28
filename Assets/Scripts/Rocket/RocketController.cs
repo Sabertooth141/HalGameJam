@@ -139,6 +139,7 @@ public class RocketController : MonoBehaviour
         GetComponent<BoxCollider2D>().enabled = false;
         
         anim.SetTrigger(Explode);
+        SoundManager.Instance.Play("Explosion");
         rocketSprite.SetActive(false);
         StartCoroutine(AfterExplosion());
     }

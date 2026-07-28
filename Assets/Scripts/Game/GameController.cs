@@ -76,6 +76,8 @@ public class GameController : MonoBehaviour
         {
             vPlayer.Prepare();
         }
+
+        SoundManager.Instance.Play("SignalLoss");
     }
 
     private void StartPlayback()
@@ -95,7 +97,7 @@ public class GameController : MonoBehaviour
         {
             RestartScene();
         }
-        if (isTransitioning && kb.spaceKey.wasPressedThisFrame)
+        if (isTransitioning && kb.rKey.wasPressedThisFrame)
         {
             Go();
         }

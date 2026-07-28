@@ -257,6 +257,7 @@ public class StartController : MonoBehaviour
         if (rocketController != null) rocketController.DestroyRocket();
         GenerateRocket();
         var velocity = rocketController.CalculateVelocity();
+        SoundManager.Instance.Play("Launch");
         rocketGravBody.AddImpulse(velocity);
     }
 
