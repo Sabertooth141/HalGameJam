@@ -1,7 +1,6 @@
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.SocialPlatforms.Impl;
 
 public class StartController : MonoBehaviour
 {
@@ -114,8 +113,6 @@ public class StartController : MonoBehaviour
     private void Update()
     {
         timer += Time.deltaTime;
-
-        UpdateLauncherRotation();
 
         if (launchMode == LaunchMode.Automatic)
         {
@@ -259,15 +256,4 @@ public class StartController : MonoBehaviour
         var velocity = rocketController.CalculateVelocity();
         rocketGravBody.AddImpulse(velocity);
     }
-
-    //発射台の回転を更新するメソッド
-    private void UpdateLauncherRotation()
-    {
-        transform.rotation = Quaternion.Euler(0f, 0f, launchAngle);
-    }
-
-    //ロケットの発射速度を取得するメソッド
-    public float LaunchSpeed { get { return launchSpeed; } }
-    //ロケットの発射最大速度を取得するメソッド
-    public float MaxLaunchSpeed { get { return maxLaunchSpeed; } }
 }
