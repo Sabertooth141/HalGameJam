@@ -58,7 +58,6 @@ public class GoalController : MonoBehaviour
         Vector3 pos = rocketController.transform.position;
         Vector2 rocketPos = new Vector2(pos.x, pos.y);
         CheckGoal(rocketPos);
-        OnDrawGizmos();
     }
 
     private void OnDrawGizmos()
@@ -76,7 +75,7 @@ public class GoalController : MonoBehaviour
         {
             isGoal = true;
             Debug.Log("Goal!");
-            SceneTransitioner.Instance.LoadSceneInstant(SceneTransitioner.SceneName.SampleScene1);
+            SceneTransitioner.Instance.LoadSceneSlide(SceneTransitioner.SceneName.SampleScene1);
         }
     }
 }

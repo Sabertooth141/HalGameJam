@@ -18,34 +18,36 @@ public class SceneTransitioner : MonoBehaviour
     // 列挙型
     //----------------------------
     //シーン名列挙型
-    //Unityのビルド設定でのシーンの順番と合わせること
-    //public enum SceneName
-    //{
-    //    Title = 0,
-    //    Playing = 1,
-    //    Result = 2,
-
-    //    SampleScene1 = 3, //テスト用のサンプルシーン
-    //    SampleScene2 = 4, //テスト用のサンプルシーン2
-    //}
-    //テストのためにタイトルとかのシーン番号を変えている。あとで戻す。
     public enum SceneName
     {
-        Title = 10,
-        Playing = 11,
-        Result = 12,
+        Title = 0,
+        StageSelect = 1,
+        Result = 2,
 
-        SampleScene1 = 0, //テスト用のサンプルシーン
-        SampleScene2 = 1, //テスト用のサンプルシーン2
+        SampleScene1 = 3, //テスト用のサンプルシーン
+        SampleScene2 = 4, //テスト用のサンプルシーン2
     }
 
     //----------------------------
     // パラメータ
     //----------------------------
-    [Header("フェードアウトする画像")]
-    [SerializeField] private Image FadeImg;
-    [Header("フェード時間")]
-    [SerializeField] private float Duration = 1.0f;
+    [Header("フェードアウト")]
+    [Tooltip("フェードアウトする画像")]
+    [SerializeField] private Image fadeImg;
+    [Tooltip("フェード時間")]
+    [SerializeField] private float duration = 1.0f;
+    [Tooltip("フェードアウト後に止まる時間")]
+    [SerializeField] private float fadeStopTime = 0.5f; //フェードアウト後に止まる時間
+
+    [Header("スライドイン")]
+    [Tooltip("スライドインする画像")]
+    [SerializeField] private Image slideImg;
+    [Tooltip("スライド時間")]
+    [SerializeField] private float slideDuration = 1.0f;
+    [Tooltip("スライドする画像の止まる位置のオフセット")]
+    [SerializeField] private float slideOffset = 1.0f;
+    [Tooltip("スライドイン後に止まる時間")]
+    [SerializeField] private float slideStopTime = 0.5f; //スライドイン後に止まる時間
 
     [Header("シーン管理")]
     [Tooltip("現在のシーン")]
@@ -70,12 +72,12 @@ public class SceneTransitioner : MonoBehaviour
         Instance = this;
 
         // シーンをまたいでも破棄されないようにしたい場合
-        // DontDestroyOnLoad(gameObject);
+        DontDestroyOnLoad(gameObject);
 
         //初期値はα値を0にして透明にしておく
-        Color color = FadeImg.color;
+        Color color = fadeImg.color;
         color.a = 0f;
-        FadeImg.color = color;
+        fadeImg.color = color;
     }
 
     private void Start()
@@ -103,32 +105,12 @@ public class SceneTransitioner : MonoBehaviour
         {
             case SceneName.Title:
                 //プレイ画面に遷移
-                //（タイトル画面であり、ESCキー以外の何かキーが押された場合に遷移）
-                if (Keyboard.current.escapeKey.wasPressedThisFrame)
-                {
-                    break; //ESCキーなら遷移なし
-                }
-                else if (Keyboard.current.anyKey.wasPressedThisFrame)
-                {
-                    Debug.Log("タイトル画面で何かキーが押された");
-                    LoadSceneFade(SceneName.Playing); //プレイ画面に遷移
-                }
                 break;
-            case SceneName.Playing:
-                //リザルト画面に遷移
-                //if (GameManager.Instance.gameStageSteps == GameManager.GameStageSteps.gameEnd && (GameManager.Instance.isGameCleard || GameManager.Instance.isGameOver))
-                //{
-                //    LoadSceneFade(SceneName.Result); //リザルト画面に遷移
-                //}
-
-                //イベントで実行するように変更
+            case SceneName.StageSelect:
+                //各ステージに遷移
                 break;
             case SceneName.Result:
                 //タイトル画面に遷移
-                if (Keyboard.current.enterKey.wasPressedThisFrame)
-                {
-                    LoadSceneFade(SceneName.Title); //タイトル画面に遷移
-                }
                 break;
             default:
                 break;
@@ -147,51 +129,74 @@ public class SceneTransitioner : MonoBehaviour
         return currentScene == sceneName;
     }
 
-    //フェードしながら次のシーンに切り替える関数
+    // フェード処理
+    //画像をフェードしながら次のシーンに切り替える関数
     private IEnumerator LoadFade(SceneName name)
     {
-        Color color = FadeImg.color;
-        FadeImg.color = color;
+        Color color = fadeImg.color;
+        fadeImg.color = color;
         isSceneTransitioning = true; //シーン遷移中フラグを立てる
 
+        //--------------
         //フェードアウトする
         float time = 0.0f; //初期化
-        while (time < Duration)
+        while (time < duration)
         {
             time += Time.deltaTime; //時間を加算
             //アルファ値の変化用の変数
-            float alpha = Mathf.Clamp01(time / Duration); //Clamp01は0~1の値に制限して返す
+            float alpha = Mathf.Clamp01(time / duration); //Clamp01は0~1の値に制限して返す
 
             color.a = alpha; //alpha値を変更
-            FadeImg.color = color;
+            fadeImg.color = color;
 
             //1フレーム停止する
             //→停止したのち、またここから開始する
             yield return null;
         }
 
+        //--------------
         //ここでシーン遷移直前に行いたい処理を呼び出す
         //
 
+        //--------------
         //裏でシーン遷移を済ませる
-        color.a = 1.0f;
-        FadeImg.color = color;
-        SceneManager.LoadScene((int)name);
+        //非同期でシーンをロード
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync((int)name);
+
+        //ロードが完了しても勝手にシーンを切り替えないように設定
+        asyncLoad.allowSceneActivation = false;
+
+        // asyncLoad.progress が 0.9 になると「ロード完了（切り替え準備OK）」を意味する
+        while (asyncLoad.progress < 0.9f)
+        {
+            yield return null; // ロードが終わるまで1フレームずつ待つ
+        }
+
+        // ロード完了したのでシーン切り替えを許可する
+        asyncLoad.allowSceneActivation = true;
+
+        // シーンが実際に切り替わるまで待機する
+        while (!asyncLoad.isDone)
+        {
+            yield return null;
+        }
         currentScene = name; //現在のシーン名を更新
 
+        //--------------
         //ここでシーン遷移直後に行いたい処理を呼び出す
         //
 
+        //--------------
         //フェードインする
         time = 0.0f; //初期化
-        while (time < Duration)
+        while (time < duration)
         {
             time += Time.deltaTime; //時間を加算
             //アルファ値の変化用の変数
-            float alpha = Mathf.Clamp01(time / Duration); //Clamp01は0~1の値に制限して返す
+            float alpha = Mathf.Clamp01(time / duration); //Clamp01は0~1の値に制限して返す
 
             color.a = 1 - alpha; //alpha値を変更
-            FadeImg.color = color;
+            fadeImg.color = color;
 
             //1フレーム停止する
             //→停止したのち、またここから開始する
@@ -202,16 +207,105 @@ public class SceneTransitioner : MonoBehaviour
         isSceneTransitioning = false; //シーン遷移中フラグを下ろす
     }
 
+    // スライド処理
+    //画像をスライドしながら次のシーンに切り替える関数
+    IEnumerator LoadSlide(SceneName name)
+    {
+        isSceneTransitioning = true; //シーン遷移中フラグを立てる
+
+        //--------------
+        //画像をスライドインする
+        float time = 0.0f; //初期化
+        Vector3 tempPos = slideImg.rectTransform.anchoredPosition;
+        Vector3 startPos = new Vector3(Screen.width + slideImg.rectTransform.rect.width, tempPos.y, tempPos.z); //右からスタート
+        Vector3 endPos = new Vector3(slideOffset, tempPos.y, tempPos.z); //中央で一旦止まる(オフセット付き)
+        while (time < slideDuration)
+        {
+            time += Time.deltaTime; //時間を加算
+            float t = Mathf.Clamp01(time / slideDuration); //0~1の値に制限して返す
+            slideImg.rectTransform.localPosition = Vector3.Lerp(tempPos, endPos, t); //線形補間で位置を更新
+            yield return null; //1フレーム停止する
+        }
+
+        //--------------
+        //ここでシーン遷移直前に行いたい処理を呼び出す
+        //
+
+        //--------------
+        //裏でシーン遷移を済ませる
+        //非同期でシーンをロード
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync((int)name);
+
+        //ロードが完了しても勝手にシーンを切り替えないように設定
+        asyncLoad.allowSceneActivation = false;
+
+        // asyncLoad.progress が 0.9 になると「ロード完了（切り替え準備OK）」を意味する
+        while (asyncLoad.progress < 0.9f)
+        {
+            yield return null; // ロードが終わるまで1フレームずつ待つ
+        }
+
+        // ロード完了したのでシーン切り替えを許可する
+        asyncLoad.allowSceneActivation = true;
+
+        // シーンが実際に切り替わるまで待機する
+        while (!asyncLoad.isDone)
+        {
+            yield return null;
+        }
+        currentScene = name; //現在のシーン名を更新
+
+        //--------------
+        //ここでシーン遷移直後に行いたい処理を呼び出す
+        //
+
+        //--------------
+        //画像をスライドアウトする
+        time = 0.0f; //初期化
+        startPos = endPos; //今の位置からスタート
+        endPos = new Vector3(-Screen.width - slideImg.rectTransform.rect.width, tempPos.y, tempPos.z); //左へスライドアウト
+        while (time < slideDuration)
+        {
+            time += Time.deltaTime; //時間を加算
+            float t = Mathf.Clamp01(time / slideDuration); //0~1の値に制限して返す
+            slideImg.rectTransform.localPosition = Vector3.Lerp(startPos, endPos, t); //線形補間で位置を更新
+            yield return null; //1フレーム停止する
+        }
+        isSceneTransitioning = false; //シーン遷移中フラグを下ろす
+    }
+
     //フェードしながら次のシーンに切り替える関数を実行する関数
     public void LoadSceneFade(SceneName name)
     {
+        if (isSceneTransitioning)
+        {
+            Debug.LogWarning("シーン遷移中のため、フェード遷移は無効です。");
+            return;
+        }
         StartCoroutine(LoadFade(name));
         Debug.Log(name + "画面にフェード遷移");
     }
 
-    //シーンを切り替える関数(LoadSceneの引数をenumに変えるイメージ)
+    //スライドしながら次のシーンに切り替える関数を実行する関数
+    public void LoadSceneSlide(SceneName name)
+    {
+        if (isSceneTransitioning)
+        {
+            Debug.LogWarning("シーン遷移中のため、スライド遷移は無効です。");
+            return;
+        }
+        StartCoroutine(LoadSlide(name));
+        Debug.Log(name + "画面にスライド遷移");
+    }
+
+    //シーンを特殊効果なしに切り替える関数(LoadSceneの引数をenumに変えるだけの関数って感じ)
     public void LoadSceneInstant(SceneName name)
     {
+        if (isSceneTransitioning)
+        {
+            Debug.LogWarning("シーン遷移中のため、遷移は無効です。");
+            return;
+        }
         SceneManager.LoadScene((int)name);
         currentScene = name; //現在のシーン名を更新
         Debug.Log(name + "画面に遷移");
@@ -239,7 +333,7 @@ public class SceneTransitioner : MonoBehaviour
             case SceneName.Title:
                 Debug.Log("現在のシーンはタイトル");
                 break;
-            case SceneName.Playing:
+            case SceneName.StageSelect:
                 Debug.Log("現在のシーンはプレイ中");
                 break;
             case SceneName.Result:

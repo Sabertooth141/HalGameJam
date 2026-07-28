@@ -41,7 +41,6 @@ public class StageSelect : MonoBehaviour
         Vector3 pos = rocketController.transform.position;
         Vector2 rocketPos = new Vector2(pos.x, pos.y);
         CheckSelected(rocketPos);
-        OnDrawGizmos();
     }
 
     private void OnDrawGizmos()
