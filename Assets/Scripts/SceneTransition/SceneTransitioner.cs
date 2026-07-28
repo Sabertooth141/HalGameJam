@@ -36,8 +36,6 @@ public class SceneTransitioner : MonoBehaviour
     [SerializeField] private Image fadeImg;
     [Tooltip("フェード時間")]
     [SerializeField] private float duration = 1.0f;
-    [Tooltip("フェードアウト後に止まる時間")]
-    [SerializeField] private float fadeStopTime = 0.5f; //フェードアウト後に止まる時間
 
     [Header("スライドイン")]
     [Tooltip("スライドインする画像")]
@@ -46,8 +44,6 @@ public class SceneTransitioner : MonoBehaviour
     [SerializeField] private float slideDuration = 1.0f;
     [Tooltip("スライドする画像の止まる位置のオフセット")]
     [SerializeField] private float slideOffset = 1.0f;
-    [Tooltip("スライドイン後に止まる時間")]
-    [SerializeField] private float slideStopTime = 0.5f; //スライドイン後に止まる時間
 
     [Header("シーン管理")]
     [Tooltip("現在のシーン")]
