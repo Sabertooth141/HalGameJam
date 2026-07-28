@@ -96,5 +96,4 @@ public class RocketManager : MonoBehaviour
         OnCreateRocket?.Invoke(); // ƒCƒxƒ“ƒg‚ð”­‰Î
         return rocketController;
     }
-    
 }

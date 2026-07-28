@@ -42,10 +42,17 @@ public class RocketController : MonoBehaviour
     }
 
     //パラメータをセットするメソッド
-    public void SetParameters(float angle, float speed)
+    public void SetParameters(float inAngle, float inSpeed)
     {
-        this.angle = angle;
-        this.speed = speed;
+        this.angle = inAngle;
+        this.speed = inSpeed;
+    }
+
+    public void SetParameters(float inAngle, float inSpeed, Vector2 pos)
+    {
+        this.angle = inAngle;
+        this.speed = inSpeed;
+
     }
 
     //角度と速さから速度ベクトルを計算するメソッド
