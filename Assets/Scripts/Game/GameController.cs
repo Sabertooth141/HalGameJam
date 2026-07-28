@@ -86,7 +86,6 @@ public class GameController : MonoBehaviour
         }
         vPlayer.frame = 0;
         vPlayer.Play();
-        Debug.Log($"Play() called. isPlaying={vPlayer.isPlaying}");
         StartCoroutine(Failsafe());
     }
 
@@ -115,7 +114,6 @@ public class GameController : MonoBehaviour
     {
         if (hasLoaded) return;
         hasLoaded = true;
-        Debug.Log("RestartScene:\n" + System.Environment.StackTrace);
         Time.timeScale = 1f;
         if (SceneTransitioner.Instance.GetCurrentScene(SceneTransitioner.SceneName.StageSelect))
         {

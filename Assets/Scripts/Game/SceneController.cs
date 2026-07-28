@@ -49,6 +49,7 @@ public class SceneController : MonoBehaviour
         restarting = true;
         if(SceneTransitioner.Instance.GetCurrentScene(SceneTransitioner.SceneName.StageSelect))
         {
+            
             //シーンがStageSelectの場合は、シーンをリロードせずに遷移する
             rocketPos = Vector2.zero;
             restarting = false;
