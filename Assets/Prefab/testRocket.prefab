@@ -258,7 +258,7 @@ MonoBehaviour:
   speed: 10
   maxSpeed: 0
   anim: {fileID: 1107343995203731660}
-  explodeLen: 1.23
+  explodeLen: 1.1
   rocketSprite: {fileID: 2144884971835087344}
 --- !u!114 &3763799339549930054
 MonoBehaviour:
