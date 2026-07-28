@@ -11,7 +11,7 @@ public class GoalController : MonoBehaviour
     // ƒpƒ‰ƒ[ƒ^
     //----------------------------
     [Header("ƒS[ƒ‹‚Ì”¼Œa")]
-    [Tooltip("ƒS[ƒ‹‚Ì”¼Œa")]
+    [Tooltip("ƒS[ƒ‹‚Ì”¼Œa‚ğİ’è‚·‚é")]
     [SerializeField] private float goalRadius = 1f; // ƒS[ƒ‹‚Ì”¼Œa
 
     //----------------------------
@@ -67,6 +67,7 @@ public class GoalController : MonoBehaviour
         {
             isGoal = true;
             Debug.Log("Goal!");
+            SceneTransitioner.Instance.LoadSceneInstant(SceneTransitioner.SceneName.SampleScene1);
         }
     }
 }

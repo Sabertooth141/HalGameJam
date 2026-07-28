@@ -27,6 +27,7 @@ public class RocketManager : MonoBehaviour
     //----------------------------
     //ロケットのプレハブを格納する変数
     [Header("ロケットのプレハブ")]
+    [Tooltip("生成するロケットのプレハブを指定する")]
     [SerializeField] private GameObject rocketPrefab; // ロケットのプレハブ
 
     //----------------------------
