@@ -49,6 +49,9 @@ MonoBehaviour:
   lookaheadSteps: 150
   stepsPerPt: 1
   cullingRadius: 600
+  textureTiling: 1
+  scrollSpeed: 0.5
+  scrollForward: 1
 --- !u!120 &5788830507905606618
 LineRenderer:
   serializedVersion: 3
@@ -267,8 +270,8 @@ MonoBehaviour:
   baseLaunchAngle: 0
   launchAngleRange: 360
   launchSpeed: 10
-  maxLaunchSpeed: 80
-  minLaunchSpeed: 5
+  maxLaunchSpeed: 20
+  minLaunchSpeed: 3
   launchSpeedChangeMagnitude: 3
   trajPredict: {fileID: 0}
   launchMode: 2
