@@ -38,7 +38,6 @@ public class OrbitInitializer : MonoBehaviour
         }
 
         float initialSpeed = system.CircularOrbitSpeed(parent.mass, orbitR);
-        Debug.Log($"v={initialSpeed:F3}  expected={Mathf.Sqrt(system.gravitationalConstant * parent.mass / orbitR):F3}");
 
         //　parentへ方向の垂直方向
         Vector2 tangentDir = new Vector2(-offset.y, offset.x).normalized;
