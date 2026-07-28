@@ -157,6 +157,7 @@ MonoBehaviour:
   softeningRadius: 0
   position: {x: 0, y: 0}
   acceleration: {x: 0, y: 0}
+  collisionRadius: 0
 --- !u!212 &74162498
 SpriteRenderer:
   serializedVersion: 2
@@ -314,7 +315,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &122188682
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -348,6 +349,7 @@ MonoBehaviour:
   softeningRadius: 0
   position: {x: 0, y: 0}
   acceleration: {x: 0, y: 0}
+  collisionRadius: 0
 --- !u!212 &122188684
 SpriteRenderer:
   serializedVersion: 2
@@ -505,7 +507,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &361590595
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -539,6 +541,7 @@ MonoBehaviour:
   softeningRadius: 0
   position: {x: 0, y: 0}
   acceleration: {x: 0, y: 0}
+  collisionRadius: 0
 --- !u!212 &361590597
 SpriteRenderer:
   serializedVersion: 2
@@ -1152,6 +1155,32 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!1 &1349267276 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6345345353323923341, guid: 1fa193c6ac7a5c344bf639ed6c2782a2, type: 3}
+  m_PrefabInstance: {fileID: 9044791649499370567}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1349267283
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1349267276}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1708625d62eb0b44a3c0acfee60f9d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GravPredictionDebugger
+  horizonTicks: 100
+  errorThreshold: 0.1
+  repeatDelayTicks: 0
+  useFaithfulModel: 0
+  injectPreviewBody: 1
+  previewMass: 0
+  previewPos: {x: -8.35, y: 1.13}
+  previewVel: {x: 3, y: 0}
+  logBodyTableOnStart: 1
 --- !u!1 &1812798802
 GameObject:
   m_ObjectHideFlags: 0
@@ -1796,6 +1825,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2779572315944363648, guid: ac1133b132ed60c4d926c689e3dc330b, type: 3}
+      propertyPath: scrollForward
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4876621757362601065, guid: ac1133b132ed60c4d926c689e3dc330b, type: 3}
       propertyPath: m_Name
       value: Start
@@ -1921,7 +1954,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6345345353323923341, guid: 1fa193c6ac7a5c344bf639ed6c2782a2, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1349267283}
   m_SourcePrefab: {fileID: 100100000, guid: 1fa193c6ac7a5c344bf639ed6c2782a2, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

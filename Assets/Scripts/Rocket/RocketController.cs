@@ -136,7 +136,7 @@ public class RocketController : MonoBehaviour
 
         gravBody.isAnchored = true;
         gravBody.velocity = Vector2.zero;
-        GetComponent<BoxCollider2D>().enabled = false;
+        GetComponent<CircleCollider2D>().enabled = false;
         
         anim.SetTrigger(Explode);
         SoundManager.Instance.Play("Explosion");

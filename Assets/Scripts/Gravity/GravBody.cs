@@ -20,6 +20,17 @@ public class GravBody : MonoBehaviour
     [HideInInspector] public Vector2 position;
     [HideInInspector] public Vector2 acceleration;
 
+    public float collisionRadius = 0f;
+
+    private void Awake()
+    {
+        CircleCollider2D col = GetComponent<CircleCollider2D>();
+        if (col != null)
+        {
+            collisionRadius = col.radius * MathF.Max(transform.localScale.x, transform.localScale.y);
+        }
+    }
+
     private void OnEnable()
     {
         position = transform.position;

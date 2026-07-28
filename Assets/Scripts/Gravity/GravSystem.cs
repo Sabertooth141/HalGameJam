@@ -17,15 +17,16 @@ public class GravSystem : MonoBehaviour
     [Tooltip("外部重力場")]
     public Vector2 externalField = Vector2.zero;
 
+    public const int KindNormal = 0;
+    public const int KindPlayer = 1;
+    public const int KindSatellite = 2;
+
     private static readonly List<GravBody> gravBodies = new();
     public static IReadOnlyList<GravBody> GravBodies => gravBodies;
 
     public static void Register(GravBody inGravBody)
     {
-        if (gravBodies.Contains(inGravBody))
-        {
-            return;
-        }
+        if (gravBodies.Contains(inGravBody)) return;
 
         gravBodies.Add(inGravBody);
     }
@@ -54,17 +55,14 @@ public class GravSystem : MonoBehaviour
 
     private void FixedUpdate()
     {
-        float physDt = Time.fixedDeltaTime / substeps;
-        for (int step = 0; step < substeps; step++)
-        {
-            Step(physDt);
-        }
+        var physDt = Time.fixedDeltaTime / substeps;
+        for (var step = 0; step < substeps; step++) Step(physDt);
 
         //各ティックに天体ごとの位置を更新する
-        for (int i = 0; i < gravBodies.Count; i++)
+        for (var i = 0; i < gravBodies.Count; i++)
         {
-            GravBody body = gravBodies[i];
-            Transform bodyTransform = body.transform;
+            var body = gravBodies[i];
+            var bodyTransform = body.transform;
 
             bodyTransform.position = new Vector3(body.position.x, body.position.y, bodyTransform.position.z);
         }
@@ -72,16 +70,13 @@ public class GravSystem : MonoBehaviour
 
     private void Step(float dt)
     {
-        float halfStep = dt / 2f;
+        var halfStep = dt / 2f;
 
-        for (int i = 0; i < gravBodies.Count; i++)
+        for (var i = 0; i < gravBodies.Count; i++)
         {
-            GravBody body = gravBodies[i];
+            var body = gravBodies[i];
 
-            if (body.isAnchored)
-            {
-                continue;
-            }
+            if (body.isAnchored) continue;
 
             body.velocity += body.acceleration * halfStep;
             body.position += body.velocity * dt;
@@ -89,14 +84,11 @@ public class GravSystem : MonoBehaviour
 
         ComputeAccelerations();
 
-        for (int i = 0; i < gravBodies.Count; i++)
+        for (var i = 0; i < gravBodies.Count; i++)
         {
-            GravBody body = gravBodies[i];
+            var body = gravBodies[i];
 
-            if (body.isAnchored)
-            {
-                continue;
-            }
+            if (body.isAnchored) continue;
 
             body.velocity += body.acceleration * halfStep;
         }
@@ -108,57 +100,41 @@ public class GravSystem : MonoBehaviour
     private void ComputeAccelerations()
     {
         //天体ごとの加速度をクリア
-        for (int i = 0; i < gravBodies.Count; i++)
-        {
-            gravBodies[i].acceleration = Vector2.zero;
-        }
+        for (var i = 0; i < gravBodies.Count; i++) gravBodies[i].acceleration = Vector2.zero;
 
-        for (int i = 0; i < gravBodies.Count; i++)
+        for (var i = 0; i < gravBodies.Count; i++)
         {
-            GravBody bodyA = gravBodies[i];
+            var bodyA = gravBodies[i];
 
-            for (int j = i + 1; j < gravBodies.Count; j++)
+            for (var j = i + 1; j < gravBodies.Count; j++)
             {
-                GravBody bodyB = gravBodies[j];
+                var bodyB = gravBodies[j];
 
-                if (bodyA.CompareTag("Player") && bodyB.CompareTag("Player"))
-                {
+                if (bodyA.CompareTag("Player") && bodyB.CompareTag("Player")) continue;
+
+                if ((bodyA.CompareTag("Satellite") && bodyA.GetOrbitingBody() != bodyB) ||
+                    (bodyB.CompareTag("Satellite") && bodyB.GetOrbitingBody() != bodyA))
                     continue;
-                }
 
-                if (bodyA.CompareTag("Satellite") && bodyA.GetOrbitingBody() != bodyB ||
-                    bodyB.CompareTag("Satellite") && bodyB.GetOrbitingBody() != bodyA)
-                {
-                    continue;
-                }
+                var pairSoft = Mathf.Max(softening, Mathf.Max(bodyA.softeningRadius, bodyB.softeningRadius));
+                var softSqr = pairSoft * pairSoft;
 
-                float pairSoft = Mathf.Max(softening, Mathf.Max(bodyA.softeningRadius, bodyB.softeningRadius));
-                float softSqr = pairSoft * pairSoft;
+                var displacement = bodyB.position - bodyA.position;
+                var rSqr = displacement.sqrMagnitude + softSqr;
+                var invRCubed = 1f / (rSqr * Mathf.Sqrt(rSqr));
 
-                Vector2 displacement = bodyB.position - bodyA.position;
-                float rSqr = displacement.sqrMagnitude + softSqr;
-                float invRCubed = 1f / (rSqr * Mathf.Sqrt(rSqr));
+                var unitForce = gravitationalConstant * invRCubed * displacement;
 
-                Vector2 unitForce = gravitationalConstant * invRCubed * displacement;
+                if (!bodyA.isAnchored) bodyA.acceleration += unitForce * bodyB.mass;
 
-                if (!bodyA.isAnchored)
-                {
-                    bodyA.acceleration += unitForce * bodyB.mass;
-                }
-
-                if (!bodyB.isAnchored)
-                {
-                    bodyB.acceleration -= unitForce * bodyA.mass;
-                }
+                if (!bodyB.isAnchored) bodyB.acceleration -= unitForce * bodyA.mass;
             }
         }
 
         if (externalField != Vector2.zero)
-        {
-            for (int i = 0; i < gravBodies.Count; i++)
+            for (var i = 0; i < gravBodies.Count; i++)
                 if (!gravBodies[i].isAnchored)
                     gravBodies[i].acceleration += externalField;
-        }
     }
 
     /// <summary>
@@ -167,47 +143,38 @@ public class GravSystem : MonoBehaviour
     /// <param name="pos">シーンにある天体の位置</param>
     /// <param name="mass">天体ごとの質量</param>
     /// <param name="anchored">天体ごとが動けるか</param>
+    /// <param name="kind">天体の種別</param>
+    /// <param name="orbitIndex">衛星の親のインデックス。衛星以外は-1</param>
+    /// <param name="softRadii">天体ごとの最小距離</param>
     /// <param name="acc">天体の加速度</param>
     /// <param name="bodyCount">天体の数</param>
     /// <param name="gravConst">重力定数</param>
     /// <param name="softening">最小距離</param>
-    public void ComputeAccelerations(Vector2[] pos, float[] mass, bool[] anchored, Vector2[] acc, int bodyCount, float gravConst, float softening)
+    public void ComputeAccelerations(Vector2[] pos, float[] mass, bool[] anchored, int[] kind, int[] orbitIndex,
+        float[] softRadii, Vector2[] acc, int bodyCount, float gravConst, float softening)
     {
-        for (int i = 0; i < bodyCount; i++)
+        for (var i = 0; i < bodyCount; i++) acc[i] = Vector2.zero;
+
+        for (var i = 0; i < bodyCount; i++)
+        for (var j = i + 1; j < bodyCount; j++)
         {
-            acc[i] = Vector2.zero;
-        }
+            if (kind[i] == KindPlayer && kind[j] == KindPlayer) continue;
 
-        float softSqr = softening * softening;
+            if ((kind[i] == KindSatellite && orbitIndex[i] != j) ||
+                (kind[j] == KindSatellite && orbitIndex[j] != i))
+                continue;
 
-        for (int i = 0; i < bodyCount; i++)
-        {
-            for (int j = i + 1; j < bodyCount; j++)
-            {
-                Vector2 displacement = pos[j] - pos[i];
-                float rSqr = displacement.sqrMagnitude + softSqr;
-                float invRCubed = 1f / (rSqr * Mathf.Sqrt(rSqr));
-                Vector2 unitForce = gravConst * invRCubed * displacement;
+            var pairSoft = Mathf.Max(softening, Mathf.Max(softRadii[i], softRadii[j]));
+            var softSqr = pairSoft * pairSoft;
 
-                if (!anchored[i])
-                {
-                    acc[i] += unitForce * mass[j];
-                }
+            var displacement = pos[j] - pos[i];
+            var rSqr = displacement.sqrMagnitude + softSqr;
+            var invRCubed = 1f / (rSqr * Mathf.Sqrt(rSqr));
+            var unitForce = gravConst * invRCubed * displacement;
 
-                if (!anchored[j])
-                {
-                    acc[j] -= unitForce * mass[i];
-                }
-            }
-        }
+            if (!anchored[i]) acc[i] += unitForce * mass[j];
 
-        if (externalField != Vector2.zero)
-        {
-            for (int i = 0; i < bodyCount; i++)
-                if (!anchored[i])
-                {
-                    acc[i] += externalField;
-                }
+            if (!anchored[j]) acc[j] -= unitForce * mass[i];
         }
     }
 
@@ -215,5 +182,4 @@ public class GravSystem : MonoBehaviour
     {
         return Mathf.Sqrt(gravitationalConstant * centralMass / Mathf.Max(orbitalRadius, 0.001f));
     }
-
 }
