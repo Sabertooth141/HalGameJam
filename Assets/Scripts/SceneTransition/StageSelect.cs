@@ -1,19 +1,18 @@
 using UnityEngine;
 
-public class GoalController : MonoBehaviour
+public class StageSelect : MonoBehaviour
 {
-    //----------------------------
-    //シングルトン
-    //----------------------------
-    public static GoalController Instance { get; private set; }
-
     //----------------------------
     // パラメータ
     //----------------------------
-    [Header("ゴールの半径")]
-    [Tooltip("ゴールの半径を設定する")]
+    [Header("ステージ選択星の半径")]
+    [Tooltip("ステージ選択星の半径を設定する")]
     [Min(0f)]
-    [SerializeField] private float goalRadius = 1f; // ゴールの半径
+    [SerializeField] private float radius = 1f; // 半径
+
+    [Header("次のシーン")]
+    [Tooltip("ロケットが当たったときに遷移するシーンを設定")]
+    [SerializeField] private SceneTransitioner.SceneName nextScene;
 
     //----------------------------
     // 参照
@@ -21,29 +20,13 @@ public class GoalController : MonoBehaviour
     //現在のロケットコントローラーへの参照
     private RocketController rocketController;
 
-
     //----------------------------
     // 変数
     //----------------------------
-    //ゴールしているかどうか
-    private bool isGoal = false;
 
     //----------------------------
     // 関数
     //----------------------------
-    private void Awake()
-    {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-        Instance = this;
-
-        // シーンをまたいでも破棄されないようにしたい場合
-        // DontDestroyOnLoad(gameObject);
-    }
-
     void Start()
     {
         //ロケットが生成されたときに、現在のロケットコントローラーを取得するようにイベントに登録
@@ -57,24 +40,23 @@ public class GoalController : MonoBehaviour
         if (rocketController == null) return;
         Vector3 pos = rocketController.transform.position;
         Vector2 rocketPos = new Vector2(pos.x, pos.y);
-        CheckGoal(rocketPos);
+        CheckSelected(rocketPos);
         OnDrawGizmos();
     }
 
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(transform.position, goalRadius);
+        Gizmos.DrawWireSphere(transform.position, radius);
     }
 
-    //ロケットの位置とゴールの位置を比較して近かったらゴールにする
-    private void CheckGoal(Vector2 rocketPos)
+    //ロケットの位置とステージ選択星の位置を比較して近かったらゴールにする
+    private void CheckSelected(Vector2 rocketPos)
     {
         Vector2 goalPos = new Vector2(transform.position.x, transform.position.y);
         float distance = Vector2.Distance(rocketPos, goalPos);
-        if (distance < goalRadius) // ゴールの半径を使用
+        if (distance < radius) // ゴールの半径を使用
         {
-            isGoal = true;
             Debug.Log("Goal!");
             SceneTransitioner.Instance.LoadSceneInstant(SceneTransitioner.SceneName.SampleScene1);
         }
