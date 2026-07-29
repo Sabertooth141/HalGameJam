@@ -178,6 +178,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4792404442115671246, guid: 33667510b518c604e98821dc258e2510, type: 3}
+      propertyPath: sfxCooldown
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4792404442115671246, guid: 33667510b518c604e98821dc258e2510, type: 3}
       propertyPath: sounds.Array.size
       value: 5
       objectReference: {fileID: 0}
@@ -206,8 +210,12 @@ PrefabInstance:
       value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 4792404442115671246, guid: 33667510b518c604e98821dc258e2510, type: 3}
+      propertyPath: sounds.Array.data[2].volume
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4792404442115671246, guid: 33667510b518c604e98821dc258e2510, type: 3}
       propertyPath: sounds.Array.data[3].volume
-      value: 0.2
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 4792404442115671246, guid: 33667510b518c604e98821dc258e2510, type: 3}
       propertyPath: sounds.Array.data[4].volume

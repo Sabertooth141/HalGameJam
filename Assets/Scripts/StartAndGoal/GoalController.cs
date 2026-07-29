@@ -36,19 +36,19 @@ public class GoalController : MonoBehaviour
         Instance = this;
     }
 
-    void Start()
+    private void Start()
     {
         //ロケットが生成されたときに、現在のロケットコントローラーを取得するようにイベントに登録
-        RocketManager.Instance.OnCreateRocket += () => this.rocketController = RocketManager.Instance.Current;
+        RocketManager.Instance.OnCreateRocket += () => rocketController = RocketManager.Instance.Current;
         rocketController = RocketManager.Instance.Current;
     }
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
         //ロケットの位置を取得してゴール判定を行う
         if (rocketController == null) return;
         Vector3 pos = rocketController.transform.position;
-        Vector2 rocketPos = new Vector2(pos.x, pos.y);
+        Vector2 rocketPos = new(pos.x, pos.y);
         CheckGoal(rocketPos);
     }
 
@@ -61,13 +61,20 @@ public class GoalController : MonoBehaviour
     //ロケットの位置とゴールの位置を比較して近かったらゴールにする
     private void CheckGoal(Vector2 rocketPos)
     {
-        Vector2 goalPos = new Vector2(transform.position.x, transform.position.y);
+        Vector2 goalPos = new(transform.position.x, transform.position.y);
         float distance = Vector2.Distance(rocketPos, goalPos);
         if (distance < goalRadius) // ゴールの半径を使用
         {
+            if (isGoal)
+            {
+                return;
+            }
+
             isGoal = true;
+
             rocketController.GetComponent<GravBody>().velocity = Vector2.zero; // ロケットの速度をゼロにする
-            
+            rocketController.GetComponent<GravBody>().isAnchored = true;    // ロケットを固定
+
             SoundManager.Instance.Play("Clear");
 
             if (IsLastScene())
@@ -78,7 +85,6 @@ public class GoalController : MonoBehaviour
             {
                 SceneTransitioner.Instance.LoadSceneSlide((SceneTransitioner.SceneName)SceneManager.GetActiveScene().buildIndex + 1);
             }
-            
         }
     }
 

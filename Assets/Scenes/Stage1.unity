@@ -551,6 +551,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Systems
       objectReference: {fileID: 0}
+    - target: {fileID: 7407318570618346133, guid: ab7165629b237074f9e2307303b98be7, type: 3}
+      propertyPath: sounds.Array.data[3].pitch
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7407318570618346133, guid: ab7165629b237074f9e2307303b98be7, type: 3}
+      propertyPath: sounds.Array.data[3].volume
+      value: 0.3
+      objectReference: {fileID: 0}
     - target: {fileID: 8387333858661516447, guid: ab7165629b237074f9e2307303b98be7, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.18612

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class SoundManager : MonoBehaviour
@@ -18,6 +19,11 @@ public class SoundManager : MonoBehaviour
     [SerializeField] private AudioSource sfxSource;
     [SerializeField] private AudioSource musicSource;
 
+    [Tooltip("同じSEの最小再生間隔（秒）")]
+    [SerializeField] private float sfxCooldown = 0.05f;
+
+    private readonly Dictionary<string, float> lastPlayed = new Dictionary<string, float>();
+
     private void Awake()
     {
         if (Instance != null && Instance != this) return;
@@ -34,11 +40,19 @@ public class SoundManager : MonoBehaviour
     {
         Sound sound = Array.Find(sounds, x => x.name == inName);
         sfxSource.pitch = 1f;
+
         if (sound == null)
         {
             Debug.LogWarning($"Sound not found {inName}");
             return;
         }
+
+        if (lastPlayed.TryGetValue(inName, out float last) && Time.unscaledTime - last < sfxCooldown)
+        {
+            return;
+        }
+
+        lastPlayed[inName] = Time.unscaledTime;
 
         sfxSource.pitch = sound.pitch;
         sfxSource.PlayOneShot(sound.clip, sound.volume);
