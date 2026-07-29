@@ -44,6 +44,8 @@ public class SceneTransitioner : MonoBehaviour
     [Header("フェードアウト")]
     [Tooltip("フェードアウトする画像")]
     [SerializeField] private Image fadeImg;
+    [SerializeField] private Canvas canvas;
+
     [Tooltip("フェード時間")]
     [SerializeField] private float duration = 1.0f;
 
@@ -88,6 +90,7 @@ public class SceneTransitioner : MonoBehaviour
 
     private void Start()
     {
+        canvas.sortingOrder = 0;
         currentScene = (SceneName)SceneManager.GetActiveScene().buildIndex;
     }
 
@@ -139,6 +142,7 @@ public class SceneTransitioner : MonoBehaviour
     //画像をフェードしながら次のシーンに切り替える関数
     private IEnumerator LoadFade(SceneName name)
     {
+        canvas.sortingOrder = 100;
         Color color = fadeImg.color;
         fadeImg.color = color;
         isSceneTransitioning = true; //シーン遷移中フラグを立てる
@@ -217,6 +221,7 @@ public class SceneTransitioner : MonoBehaviour
     //画像をスライドしながら次のシーンに切り替える関数
     IEnumerator LoadSlide(SceneName name)
     {
+        canvas.sortingOrder = 100;
         isSceneTransitioning = true; //シーン遷移中フラグを立てる
 
         //--------------

@@ -46,12 +46,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SceneTransitioner
   fadeImg: {fileID: 3656378699312148286}
+  canvas: {fileID: 4257637514260062126}
   duration: 1
-  fadeStopTime: 0.5
   slideImg: {fileID: 5095006840816489528}
   slideDuration: 1
   slideOffset: 1
-  slideStopTime: 0.5
   currentScene: 0
 --- !u!1 &6634505678866683392
 GameObject:

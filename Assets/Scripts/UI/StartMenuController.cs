@@ -6,7 +6,7 @@ public class StartMenuController : MonoBehaviour
     {
         Time.timeScale = 1;
 
-        SceneTransitioner.Instance.LoadSceneFade(SceneTransitioner.SceneName.StageSelect);
+        SceneTransitioner.Instance.LoadSceneSlide(SceneTransitioner.SceneName.StageSelect);
     }
 
     public void OnQuitPressed()
