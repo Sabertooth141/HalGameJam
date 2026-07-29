@@ -37,6 +37,7 @@ public class GameController : MonoBehaviour
 
         Instance = this;
 
+        Screen.SetResolution(1920, 1080, FullScreenMode.Windowed);
         stageSelectAngle = 20000f;
 
         vPlayer.isLooping = false;
