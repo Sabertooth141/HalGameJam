@@ -23,6 +23,8 @@ public class GameController : MonoBehaviour
 
     private Coroutine failsafeRoutine;
 
+    public float stageSelectAngle; //ステージ選択の角度を保持する変数
+
     private void Awake()
     {
         vPlayer = GetComponent<VideoPlayer>(); //先に取っておく
@@ -188,16 +190,6 @@ public class GameController : MonoBehaviour
 
         vPlayer.Stop();
         Time.timeScale = 1f;
-
-        if (SceneTransitioner.Instance != null &&
-            SceneTransitioner.Instance.GetCurrentScene(SceneName.StageSelect))
-        {
-            isTransitioning = false;
-            hasLoaded = false;
-            if (videoOverlay != null) videoOverlay.SetActive(false);
-            return;
-        }
-
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 

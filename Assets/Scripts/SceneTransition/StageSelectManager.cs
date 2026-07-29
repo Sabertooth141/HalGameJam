@@ -50,13 +50,14 @@ public class StageSelectManager : MonoBehaviour
     //子オブジェクトへの参照を格納する配列
     private List<Transform> stageSelects = new List<Transform>();
 
-    //デフォルトの初期角度を保持する変数
+    //現在の回転角度を保持する変数
+    private float currentTargetAngle = 0f;
 
     //----------------------------
     // イベント
     //----------------------------
     // ステージ選択の回転イベント 引数は回転角度
-    public event Action<float> OnStageLotate;
+    public event Action<float> OnStageRotate;
 
     //----------------------------
     // 関数
@@ -79,11 +80,27 @@ public class StageSelectManager : MonoBehaviour
             }
         }
 
+        //現在の回転角度をGameControllerから取得
+        // ただし、初回の場合（GameControllerの値が初期値の場合）は初期角度を設定する
+        if (GameController.Instance.stageSelectAngle == 0f)
+        {
+            currentTargetAngle = InitialAngle + InitialAngleOffset;
+        }
+        else
+        {
+            currentTargetAngle = GameController.Instance.stageSelectAngle;
+        }
+
         // 子オブジェクトを円形に配置
-        ArrangeChildrenInCircle(radius, InitialAngle + InitialAngleOffset);
+        ArrangeChildrenInCircle(radius, currentTargetAngle);
 
         // 回転イベントにメソッドを登録
-        OnStageLotate += RotateCircle;
+        OnStageRotate += RotateCircle;
+    }
+
+    private void OnDestroy()
+    {
+        GameController.Instance.stageSelectAngle = currentTargetAngle; //ステージ選択の角度をリセット
     }
 
     // Update is called once per frame
@@ -145,6 +162,8 @@ public class StageSelectManager : MonoBehaviour
     // 子オブジェクトを丸ごと回転させるメソッド
     public void RotateCircle(float angle)
     {
+        currentTargetAngle += angle;
+        GameController.Instance.stageSelectAngle = currentTargetAngle;
         // 回転角度をラジアンに変換
         float rad = angle * Mathf.Deg2Rad;
         // 子オブジェクトを回転させる
@@ -166,6 +185,9 @@ public class StageSelectManager : MonoBehaviour
     // コルーチン
     IEnumerator RotateCircle(float angle, float duration)
     {
+        currentTargetAngle += angle;
+        GameController.Instance.stageSelectAngle = currentTargetAngle;
+
         float elapsed = 0f;
         float startAngle = 0f;
 
