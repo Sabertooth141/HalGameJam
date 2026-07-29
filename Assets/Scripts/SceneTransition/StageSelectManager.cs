@@ -82,7 +82,7 @@ public class StageSelectManager : MonoBehaviour
 
         //現在の回転角度をGameControllerから取得
         // ただし、初回の場合（GameControllerの値が初期値の場合）は初期角度を設定する
-        if (GameController.Instance.stageSelectAngle == 0f)
+        if (GameController.Instance.stageSelectAngle >= 10000f)
         {
             currentTargetAngle = InitialAngle + InitialAngleOffset;
         }
@@ -100,6 +100,10 @@ public class StageSelectManager : MonoBehaviour
 
     private void OnDestroy()
     {
+        if (GameController.Instance == null)
+        {
+            return;
+        }
         GameController.Instance.stageSelectAngle = currentTargetAngle; //ステージ選択の角度をリセット
     }
 
@@ -180,23 +184,20 @@ public class StageSelectManager : MonoBehaviour
     // 子オブジェクトを丸ごと回転させるメソッド（スムーズに回転）
     public void RotateCircleSmoothly(float angle, float duration)
     {
-        StartCoroutine(RotateCircle(angle, duration));
+        StartCoroutine(ERotateCircle(angle, duration));
     }
     // コルーチン
-    IEnumerator RotateCircle(float angle, float duration)
+    IEnumerator ERotateCircle(float angle, float duration)
     {
-        currentTargetAngle += angle;
-        GameController.Instance.stageSelectAngle = currentTargetAngle;
-
         float elapsed = 0f;
         float startAngle = 0f;
 
         while (elapsed < duration)
         {
             float currentAngle = Mathf.Lerp(startAngle, angle, elapsed / duration);
-            RotateCircle(currentAngle - startAngle);
+            RotateCircle(currentAngle - startAngle);   //ここだけがcurrentTargetAngleを更新する
             startAngle = currentAngle;
-            elapsed += Time.deltaTime;
+            elapsed += Time.unscaledDeltaTime;
             yield return null;
         }
 

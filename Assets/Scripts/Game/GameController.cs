@@ -37,6 +37,8 @@ public class GameController : MonoBehaviour
 
         Instance = this;
 
+        stageSelectAngle = 20000f;
+
         vPlayer.isLooping = false;
         vPlayer.playOnAwake = false;
         vPlayer.loopPointReached += OnTransitionComplete;
