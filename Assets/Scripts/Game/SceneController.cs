@@ -1,6 +1,7 @@
 using System;
-using Unity.VectorGraphics;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using Scene = UnityEngine.SceneManagement.Scene;
 
 public class SceneController : MonoBehaviour
 {
@@ -23,10 +24,20 @@ public class SceneController : MonoBehaviour
         Instance = this;
     }
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    private void Start()
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         rocketPos = Vector2.zero;
+        restarting = false;
     }
 
     private void LateUpdate()

@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.Video;
+using static SceneTransitioner;
 
 [RequireComponent(typeof(VideoPlayer))]
 public class GameController : MonoBehaviour
@@ -39,7 +40,6 @@ public class GameController : MonoBehaviour
         vPlayer.prepareCompleted += OnPrepared;
 
         ClearTargetTexture();
-        if (videoOverlay != null) videoOverlay.SetActive(false);
     }
 
     private void Start()
@@ -48,9 +48,32 @@ public class GameController : MonoBehaviour
         {
             kb = Keyboard.current;
         }
+
+        
+    }
+
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
     private void OnPrepared(VideoPlayer p) => StartPlayback();
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (videoOverlay != null)
+        {
+            videoOverlay.SetActive(false);
+        }
+
+        isTransitioning = false;
+        hasLoaded = false;
+    }
 
     private void ClearTargetTexture()
     {
@@ -112,10 +135,10 @@ public class GameController : MonoBehaviour
         {
             RestartScene();
         }
-        if (isTransitioning && kb.spaceKey.wasPressedThisFrame)
-        {
-            Go();
-        }
+        //if (isTransitioning && kb.rKey.wasPressedThisFrame)
+        //{
+        //    Go();
+        //}
     }
 
     private void OnTransitionComplete(VideoPlayer player)
