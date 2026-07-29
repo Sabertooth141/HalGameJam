@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GoalController : MonoBehaviour
 {
@@ -75,7 +76,22 @@ public class GoalController : MonoBehaviour
             isGoal = true;
             rocketController.GetComponent<GravBody>().velocity = Vector2.zero; // ロケットの速度をゼロにする
             Debug.Log("Goal!");
-            SceneTransitioner.Instance.LoadSceneSlide(SceneTransitioner.SceneName.SampleScene1);
+            if (IsLastScene())
+            {
+                SceneTransitioner.Instance.LoadSceneSlide(SceneTransitioner.SceneName.Title);
+            }
+            else
+            {
+                SceneTransitioner.Instance.LoadSceneSlide((SceneTransitioner.SceneName)SceneManager.GetActiveScene().buildIndex + 1);
+            }
+            
         }
+    }
+
+    //今のシーンが最後かどうか
+    private bool IsLastScene()
+    {
+        int current = SceneManager.GetActiveScene().buildIndex;
+        return current == SceneManager.sceneCountInBuildSettings - 1;
     }
 }
