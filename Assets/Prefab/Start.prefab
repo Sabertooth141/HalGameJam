@@ -219,7 +219,7 @@ MonoBehaviour:
   minLaunchSpeed: 3
   launchSpeedChangeMagnitude: 3
   trajPredict: {fileID: 0}
-  launchMode: 2
+  launchMode: 0
   autoLaunchInterval: 10
 --- !u!1 &7911375201521555549
 GameObject:
