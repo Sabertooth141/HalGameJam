@@ -35,7 +35,8 @@ public class SceneTransitioner : MonoBehaviour
         Stage6, 
         Stage7, 
         Stage8, 
-        Stage9
+        Stage9,
+        Stage10
     }
 
     //----------------------------
