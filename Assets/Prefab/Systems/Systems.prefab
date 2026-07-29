@@ -56,7 +56,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 382780807251121973, guid: 0825efe54e6d2494d86113c19577f763, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -100
       objectReference: {fileID: 0}
     - target: {fileID: 382780807251121973, guid: 0825efe54e6d2494d86113c19577f763, type: 3}
       propertyPath: m_LocalRotation.w
@@ -86,9 +86,25 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3007180624191004756, guid: 0825efe54e6d2494d86113c19577f763, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -100
+      objectReference: {fileID: 0}
+    - target: {fileID: 4257637514260062126, guid: 0825efe54e6d2494d86113c19577f763, type: 3}
+      propertyPath: m_SortingOrder
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 5790878368094964083, guid: 0825efe54e6d2494d86113c19577f763, type: 3}
       propertyPath: m_Name
       value: SceneTransitioner
+      objectReference: {fileID: 0}
+    - target: {fileID: 7439865592721609245, guid: 0825efe54e6d2494d86113c19577f763, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -100
+      objectReference: {fileID: 0}
+    - target: {fileID: 8461062214376554029, guid: 0825efe54e6d2494d86113c19577f763, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
