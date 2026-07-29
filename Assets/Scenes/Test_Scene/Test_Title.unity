@@ -307,9 +307,21 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2838777062193660999, guid: ab7165629b237074f9e2307303b98be7, type: 3}
+      propertyPath: m_Volume
+      value: 0.01
+      objectReference: {fileID: 0}
     - target: {fileID: 5275719868886716752, guid: ab7165629b237074f9e2307303b98be7, type: 3}
       propertyPath: m_Name
       value: Systems
+      objectReference: {fileID: 0}
+    - target: {fileID: 7407318570618346133, guid: ab7165629b237074f9e2307303b98be7, type: 3}
+      propertyPath: sounds.Array.data[3].pitch
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7407318570618346133, guid: ab7165629b237074f9e2307303b98be7, type: 3}
+      propertyPath: sounds.Array.data[3].volume
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 8387333858661516447, guid: ab7165629b237074f9e2307303b98be7, type: 3}
       propertyPath: m_LocalPosition.x
