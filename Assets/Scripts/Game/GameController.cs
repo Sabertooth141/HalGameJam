@@ -93,6 +93,20 @@ public class GameController : MonoBehaviour
 
     private void Update()
     {
+        HandleRetry();
+        HandleReturn();
+    }
+
+    private void HandleReturn()
+    {
+        if (kb.escapeKey.wasPressedThisFrame)
+        {
+            SceneTransitioner.Instance.LoadSceneSlide(SceneTransitioner.SceneName.Title);
+        }
+    }
+
+    private void HandleRetry()
+    {
         if (kb.rKey.wasPressedThisFrame)
         {
             RestartScene();

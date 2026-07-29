@@ -76,8 +76,8 @@ public class TrajectoryPredictor : MonoBehaviour
 
     private int drawnCnt;
 
-    public Vector2 ImpactOtherPos { get; private set; }   // 衝突時の相手の予測位置
-    public float ImpactGap { get; private set; }          // 検証用
+    public Vector2 ImpactOtherPos { get; private set; } // 衝突時の相手の予測位置
+    public float ImpactGap { get; private set; } // 検証用
 
     private void Awake()
     {
@@ -89,7 +89,7 @@ public class TrajectoryPredictor : MonoBehaviour
         line.textureMode = LineTextureMode.Tile; // 軌道が伸びてもダッシュのサイズが一定
         mpb = new MaterialPropertyBlock();
 
-        EnsureBuffers(8);   // 初期確保。足りなければ後で自動的に拡張される
+        EnsureBuffers(8); // 初期確保。足りなければ後で自動的に拡張される
     }
 
     private void FixedUpdate()
@@ -116,7 +116,7 @@ public class TrajectoryPredictor : MonoBehaviour
         HasImpact = false;
         ImpactBody = null;
 
-        IReadOnlyList<GravBody> bodies = GravSystem.GravBodies;
+        var bodies = GravSystem.GravBodies;
         GravSystem system = GravSystem.Instance;
 
         if (system == null || bodies == null)
@@ -129,9 +129,9 @@ public class TrajectoryPredictor : MonoBehaviour
         EnsureBuffers(bodies.Count + 1);
 
         targetIndex = -1;
-        var bodyCount = bodies.Count;
+        int bodyCount = bodies.Count;
 
-        for (var i = 0; i < bodies.Count; i++)
+        for (int i = 0; i < bodies.Count; i++)
         {
             pos[i] = bodies[i].position;
             vel[i] = bodies[i].velocity;
@@ -225,7 +225,7 @@ public class TrajectoryPredictor : MonoBehaviour
                 vel[i] += acc[i] * halfStep;
             }
 
-            if (stopOnImpact && TryFindImpact(targetIndex, out var hitIndex, out var hitT))
+            if (stopOnImpact && TryFindImpact(targetIndex, out int hitIndex, out float hitT))
             {
                 Vector2 impact = Vector2.Lerp(prevPos[targetIndex], pos[targetIndex], hitT);
                 Vector2 otherAt = Vector2.Lerp(prevPos[hitIndex], pos[hitIndex], hitT);
@@ -250,7 +250,7 @@ public class TrajectoryPredictor : MonoBehaviour
 
             if (step % stepsPerPt != 0) continue;
 
-            var targetPos = pos[targetIndex];
+            Vector2 targetPos = pos[targetIndex];
 
             if (targetPos.sqrMagnitude > cullSqr) break;
 
@@ -265,16 +265,16 @@ public class TrajectoryPredictor : MonoBehaviour
     private void BuildCollidableList(int inBodyCount)
     {
         collidableCount = 0;
-        var selfRadius = radii[targetIndex];
+        float selfRadius = radii[targetIndex];
 
-        for (var i = 0; i < inBodyCount; i++)
+        for (int i = 0; i < inBodyCount; i++)
         {
             if (i == targetIndex || kind[i] != GravSystem.KindNormal || radii[i] < minImpactRadius) continue;
 
             collidables[collidableCount++] = i;
 
             // 発射直後など、最初から重なっている相手は離れるまで無視する
-            var combined = selfRadius + radii[i];
+            float combined = selfRadius + radii[i];
             ignoreOverlap[i] = (pos[i] - pos[targetIndex]).sqrMagnitude < combined * combined;
         }
     }
@@ -287,17 +287,17 @@ public class TrajectoryPredictor : MonoBehaviour
         hitIndex = -1;
         hitT = float.MaxValue;
 
-        var selfPrev = prevPos[self];
-        var selfNext = pos[self];
-        var selfRadius = radii[self];
+        Vector2 selfPrev = prevPos[self];
+        Vector2 selfNext = pos[self];
+        float selfRadius = radii[self];
 
-        for (var i = 0; i < collidableCount; i++)
+        for (int i = 0; i < collidableCount; i++)
         {
-            var colIndex = collidables[i];
-            var combined = selfRadius + radii[colIndex];
+            int colIndex = collidables[i];
+            float combined = selfRadius + radii[colIndex];
 
             // 相手基準の相対運動で見る（相手も動くため）
-            var toRel = selfNext - pos[colIndex];
+            Vector2 toRel = selfNext - pos[colIndex];
 
             if (ignoreOverlap[colIndex])
             {
@@ -307,9 +307,9 @@ public class TrajectoryPredictor : MonoBehaviour
                 continue;
             }
 
-            var fromRel = selfPrev - prevPos[colIndex];
+            Vector2 fromRel = selfPrev - prevPos[colIndex];
 
-            if (SegmentHitsCircle(fromRel, toRel, combined, out var t) && t < hitT)
+            if (SegmentHitsCircle(fromRel, toRel, combined, out float t) && t < hitT)
             {
                 hitT = t;
                 hitIndex = colIndex;
@@ -327,10 +327,10 @@ public class TrajectoryPredictor : MonoBehaviour
     /// <param name="toRel">終了時点の相対位置</param>
     private static bool SegmentHitsCircle(Vector2 fromRel, Vector2 toRel, float radius, out float t)
     {
-        var d = toRel - fromRel;
-        var a = Vector2.Dot(d, d);
-        var b = 2f * Vector2.Dot(fromRel, d);
-        var c = Vector2.Dot(fromRel, fromRel) - radius * radius;
+        Vector2 d = toRel - fromRel;
+        float a = Vector2.Dot(d, d);
+        float b = 2f * Vector2.Dot(fromRel, d);
+        float c = Vector2.Dot(fromRel, fromRel) - radius * radius;
 
         t = 0f;
 
@@ -338,11 +338,11 @@ public class TrajectoryPredictor : MonoBehaviour
 
         if (a <= Mathf.Epsilon) return false; // 相対的に静止
 
-        var disc = b * b - 4f * a * c;
+        float disc = b * b - 4f * a * c;
 
         if (disc < 0f) return false;
 
-        var root = (-b - Mathf.Sqrt(disc)) / (2f * a);
+        float root = (-b - Mathf.Sqrt(disc)) / (2f * a);
 
         if (root < 0f || root > 1f) return false;
 
@@ -384,7 +384,7 @@ public class TrajectoryPredictor : MonoBehaviour
             softRadii = new float[inCount];
         }
 
-        var maxPoints = lookaheadSteps / Mathf.Max(1, stepsPerPt) + 2;
+        int maxPoints = lookaheadSteps / Mathf.Max(1, stepsPerPt) + 2;
         if (points == null || points.Length < maxPoints) points = new Vector3[maxPoints];
     }
 
