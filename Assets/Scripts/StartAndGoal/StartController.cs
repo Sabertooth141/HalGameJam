@@ -265,4 +265,6 @@ public class StartController : MonoBehaviour
     public float MaxLaunchSpeed { get { return maxLaunchSpeed; } }
     //ロケットの発射最小速度を取得するメソッド
     public float MinLaunchSpeed { get { return minLaunchSpeed; } }
+
+    public bool IsLaunched { get { return isLaunched; } }
 }

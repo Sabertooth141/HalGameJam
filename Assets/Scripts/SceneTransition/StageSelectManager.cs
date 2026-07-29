@@ -110,6 +110,10 @@ public class StageSelectManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (StartController.Instance.IsLaunched)
+        {
+            return;
+        }
         // ‰ñ“]‚Ì“ü—Í‚ðŽæ“¾
         if (Keyboard.current.eKey.wasPressedThisFrame)
         {
