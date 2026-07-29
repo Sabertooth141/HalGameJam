@@ -21,6 +21,8 @@ public class GameController : MonoBehaviour
     private bool isTransitioning = false;
     private bool hasLoaded;
 
+    private Coroutine failsafeRoutine;
+
     private void Awake()
     {
         vPlayer = GetComponent<VideoPlayer>();   //先に取っておく
@@ -103,13 +105,12 @@ public class GameController : MonoBehaviour
 
     private void StartPlayback()
     {
-        if (videoOverlay != null)
-        {
-            videoOverlay.SetActive(true);
-        }
+        if (videoOverlay != null) videoOverlay.SetActive(true);
         vPlayer.frame = 0;
         vPlayer.Play();
-        StartCoroutine(Failsafe());
+
+        if (failsafeRoutine != null) StopCoroutine(failsafeRoutine);
+        failsafeRoutine = StartCoroutine(Failsafe());
     }
 
     private void Update()
@@ -131,14 +132,16 @@ public class GameController : MonoBehaviour
 
     private void HandleRetry()
     {
-        if (kb.rKey.wasPressedThisFrame)
+        if (!kb.rKey.wasPressedThisFrame) return;
+
+        if (isTransitioning)
         {
-            RestartScene();
+            Go();            //再生中ならスキップ
         }
-        //if (isTransitioning && kb.rKey.wasPressedThisFrame)
-        //{
-        //    Go();
-        //}
+        else
+        {
+            RestartScene();  //そうでなければ開始
+        }
     }
 
     private void OnTransitionComplete(VideoPlayer player)
@@ -154,15 +157,25 @@ public class GameController : MonoBehaviour
     {
         if (hasLoaded) return;
         hasLoaded = true;
-        Time.timeScale = 1f;
-        if (SceneTransitioner.Instance.GetCurrentScene(SceneTransitioner.SceneName.StageSelect))
+
+        if (failsafeRoutine != null)
         {
-            //シーンがStageSelectの場合は、シーンをリロードせずに遷移する
+            StopCoroutine(failsafeRoutine);
+            failsafeRoutine = null;
+        }
+
+        vPlayer.Stop();
+        Time.timeScale = 1f;
+
+        if (SceneTransitioner.Instance != null &&
+            SceneTransitioner.Instance.GetCurrentScene(SceneTransitioner.SceneName.StageSelect))
+        {
             isTransitioning = false;
             hasLoaded = false;
-            videoOverlay.SetActive(false);
+            if (videoOverlay != null) videoOverlay.SetActive(false);
             return;
         }
+
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
@@ -173,7 +186,14 @@ public class GameController : MonoBehaviour
 
     IEnumerator Failsafe()
     {
-        yield return new WaitForSecondsRealtime(maxWaitTime);
+        //動画の長さ + 余裕。lengthはPrepare後でないと0なので保険を入れる
+        float wait = vPlayer.length > 0.01f
+            ? (float)vPlayer.length + maxWaitTime
+            : maxWaitTime;
+
+        yield return new WaitForSecondsRealtime(wait);
+        Debug.LogWarning("Failsafeが発動しました");
+        failsafeRoutine = null;
         Go();
     }
 

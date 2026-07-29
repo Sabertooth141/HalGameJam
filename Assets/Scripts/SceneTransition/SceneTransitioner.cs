@@ -78,7 +78,26 @@ public class SceneTransitioner : MonoBehaviour
 
         Instance = this;
 
-        //初期値はα値を0にして透明にしておく
+        ////初期値はα値を0にして透明にしておく
+        //Color color = fadeImg.color;
+        //color.a = 0f;
+        //fadeImg.color = color;
+    }
+
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        currentScene = (SceneName)SceneManager.GetActiveScene().buildIndex;
+
         Color color = fadeImg.color;
         color.a = 0f;
         fadeImg.color = color;
@@ -86,7 +105,6 @@ public class SceneTransitioner : MonoBehaviour
 
     private void Start()
     {
-        currentScene = (SceneName)SceneManager.GetActiveScene().buildIndex;
     }
 
     private void Update()
@@ -227,7 +245,7 @@ public class SceneTransitioner : MonoBehaviour
         {
             time += Time.deltaTime; //時間を加算
             float t = Mathf.Clamp01(time / slideDuration); //0~1の値に制限して返す
-            slideImg.rectTransform.localPosition = Vector3.Lerp(tempPos, endPos, t); //線形補間で位置を更新
+            slideImg.rectTransform.localPosition = Vector3.Lerp(startPos, endPos, t); //線形補間で位置を更新
             yield return null; //1フレーム停止する
         }
 
