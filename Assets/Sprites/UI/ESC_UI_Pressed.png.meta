@@ -1,16 +1,10 @@
 fileFormatVersion: 2
-guid: 1630711db0fa21245b302f6f0ab33e33
+guid: 366ad3e172a1e0345bcb02eefe43e19a
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 4369572136041557648
-    second: title_0
-  - first:
-      213: 3918735734063839423
-    second: title_1
-  - first:
-      213: 8126443836680682420
-    second: title_2
+      213: -3339801109474437942
+    second: ESC_UI_Pressed_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -119,23 +113,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: title_0
+      name: ESC_UI_Pressed_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 2732
-        height: 2048
+        x: 71
+        y: 9
+        width: 156
+        height: 69
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 09ea33de4b6d3ac30800000000000000
-      internalID: 4369572136041557648
+      spriteID: ac412510694a6a1d0800000000000000
+      internalID: -3339801109474437942
       vertices: []
       indices: 
       edges: []
@@ -144,7 +138,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 2e70366f8356e2442ac084481894baaf
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -152,11 +146,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries:
-      - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":2732.0,"y":2048.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
+      entries: []
     nameFileIdTable:
-      title_0: 4369572136041557648
+      ESC_UI_Pressed_0: -3339801109474437942
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

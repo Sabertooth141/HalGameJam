@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3648571839164132957}
   - component: {fileID: 3127416344192201625}
   m_Layer: 0
-  m_Name: GaugeUI
+  m_Name: GameplayUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

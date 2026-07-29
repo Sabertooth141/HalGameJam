@@ -22,8 +22,8 @@ public class SceneTransitioner : MonoBehaviour
     public enum SceneName
     {
         Title = 0,
-        StageSelect = 1,
-        Result = 2,
+        StageSelect,
+        Result,
         SampleScene1, //テスト用のサンプルシーン
         SampleScene2, //テスト用のサンプルシーン2
 
