@@ -1398,7 +1398,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1518691004909331458, guid: 9d49225c83e6b3b4ab4a922daa97a285, type: 3}
       propertyPath: nextScene
-      value: 13
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 3176873818878025113, guid: 9d49225c83e6b3b4ab4a922daa97a285, type: 3}
       propertyPath: m_Name
@@ -1449,9 +1449,21 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5859442571656768815, guid: 9d49225c83e6b3b4ab4a922daa97a285, type: 3}
+      propertyPath: m_Size.x
+      value: 5.91
+      objectReference: {fileID: 0}
+    - target: {fileID: 5859442571656768815, guid: 9d49225c83e6b3b4ab4a922daa97a285, type: 3}
+      propertyPath: m_Size.y
+      value: 5.91
+      objectReference: {fileID: 0}
+    - target: {fileID: 5859442571656768815, guid: 9d49225c83e6b3b4ab4a922daa97a285, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: -5099292496197868168, guid: cdd29251cd93d174783c2bc201876a9f, type: 3}
+      objectReference: {fileID: 21300000, guid: cdd29251cd93d174783c2bc201876a9f, type: 3}
+    - target: {fileID: 5859442571656768815, guid: 9d49225c83e6b3b4ab4a922daa97a285, type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
