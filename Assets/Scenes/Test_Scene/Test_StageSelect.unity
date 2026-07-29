@@ -766,17 +766,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9d49225c83e6b3b4ab4a922daa97a285, type: 3}
---- !u!114 &628422522 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2779572315944363648, guid: ac1133b132ed60c4d926c689e3dc330b, type: 3}
-  m_PrefabInstance: {fileID: 938846834}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bb51d397393b17c448c8bdee807aae72, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TrajectoryPredictor
 --- !u!1001 &666500979
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1037,10 +1026,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4242776998264691510, guid: ac1133b132ed60c4d926c689e3dc330b, type: 3}
-      propertyPath: trajPredict
-      value: 
-      objectReference: {fileID: 628422522}
     - target: {fileID: 4876621757362601065, guid: ac1133b132ed60c4d926c689e3dc330b, type: 3}
       propertyPath: m_Name
       value: Start

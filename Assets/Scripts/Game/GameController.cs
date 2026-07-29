@@ -152,6 +152,19 @@ public class GameController : MonoBehaviour
         }
     }
 
+    //リセットで使う
+    public void ResetScene()
+    {
+        if (isTransitioning)
+        {
+            Go();            //再生中ならスキップ
+        }
+        else
+        {
+            RestartScene();  //そうでなければ開始
+        }
+    }
+
     private void OnTransitionComplete(VideoPlayer player)
     {
         if (!isTransitioning)

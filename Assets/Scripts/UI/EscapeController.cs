@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class EscapeController : MonoBehaviour
 {
@@ -13,5 +14,10 @@ public class EscapeController : MonoBehaviour
         }
 
         SceneTransitioner.Instance.LoadSceneSlide(SceneTransitioner.SceneName.StageSelect);
+    }
+    public void OnResetPressed()
+    {
+        GameController.Instance.ResetScene();
+        EventSystem.current.SetSelectedGameObject(null);
     }
 }
