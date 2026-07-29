@@ -47,12 +47,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 381c0f56227ed6a4b8d972fbd2523055, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GravBody
-  mass: 20
+  mass: 200
   velocity: {x: 0, y: 0}
   isAnchored: 1
   softeningRadius: 0
   position: {x: 0, y: 0}
   acceleration: {x: 0, y: 0}
+  collisionRadius: 0
 --- !u!58 &217129790705827580
 CircleCollider2D:
   m_ObjectHideFlags: 0
