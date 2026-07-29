@@ -78,7 +78,7 @@ public class GoalController : MonoBehaviour
             Debug.Log("Goal!");
             if (IsLastScene())
             {
-                SceneTransitioner.Instance.LoadSceneSlide(SceneTransitioner.SceneName.Title);
+                SceneTransitioner.Instance.LoadSceneSlide(SceneTransitioner.SceneName.Result);
             }
             else
             {
