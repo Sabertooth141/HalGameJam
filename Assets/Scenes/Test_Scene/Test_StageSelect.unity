@@ -757,7 +757,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 309}
-  m_SizeDelta: {x: 445.559, y: 134.531}
+  m_SizeDelta: {x: 445.56, y: 134.53}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!95 &735277384
 Animator:
