@@ -180,4 +180,26 @@ public class StageSelectManager : MonoBehaviour
 
         RotateCircle(angle - startAngle);
     }
+
+
+    // Q/Eボタンが押されたときに呼び出したい関数
+    // ※必ず public をつけて外部からアクセスできるようにします
+    public void OnButtonClick_Q()
+    {
+        Debug.Log("Qボタンが押されました！");
+
+        //右回転の処理を呼び出す
+        RotateCircle(angle);
+
+        // ここにアニメーション再生や画面遷移などの処理を書きます
+    }
+    public void OnButtonClick_E()
+    {
+        Debug.Log("Eボタンが押されました！");
+
+        //左回転の処理を呼び出す
+        RotateCircle(-angle);
+
+        // ここにアニメーション再生や画面遷移などの処理を書きます
+    }
 }
