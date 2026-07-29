@@ -67,7 +67,9 @@ public class GoalController : MonoBehaviour
         {
             isGoal = true;
             rocketController.GetComponent<GravBody>().velocity = Vector2.zero; // ロケットの速度をゼロにする
-            Debug.Log("Goal!");
+            
+            SoundManager.Instance.Play("Clear");
+
             if (IsLastScene())
             {
                 SceneTransitioner.Instance.LoadSceneSlide(SceneTransitioner.SceneName.Result);
