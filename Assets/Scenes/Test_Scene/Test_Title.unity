@@ -309,7 +309,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2838777062193660999, guid: ab7165629b237074f9e2307303b98be7, type: 3}
       propertyPath: m_Volume
-      value: 0.01
+      value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 5275719868886716752, guid: ab7165629b237074f9e2307303b98be7, type: 3}
       propertyPath: m_Name
@@ -318,6 +318,14 @@ PrefabInstance:
     - target: {fileID: 7407318570618346133, guid: ab7165629b237074f9e2307303b98be7, type: 3}
       propertyPath: sounds.Array.data[3].pitch
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7407318570618346133, guid: ab7165629b237074f9e2307303b98be7, type: 3}
+      propertyPath: sounds.Array.data[1].volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7407318570618346133, guid: ab7165629b237074f9e2307303b98be7, type: 3}
+      propertyPath: sounds.Array.data[2].volume
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 7407318570618346133, guid: ab7165629b237074f9e2307303b98be7, type: 3}
       propertyPath: sounds.Array.data[3].volume

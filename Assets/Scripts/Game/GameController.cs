@@ -25,7 +25,7 @@ public class GameController : MonoBehaviour
 
     private void Awake()
     {
-        vPlayer = GetComponent<VideoPlayer>();   //先に取っておく
+        vPlayer = GetComponent<VideoPlayer>(); //先に取っておく
 
         if (Instance != null && Instance != this)
         {
@@ -50,8 +50,6 @@ public class GameController : MonoBehaviour
         {
             kb = Keyboard.current;
         }
-
-        
     }
 
     private void OnEnable()
@@ -64,7 +62,10 @@ public class GameController : MonoBehaviour
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
-    private void OnPrepared(VideoPlayer p) => StartPlayback();
+    private void OnPrepared(VideoPlayer p)
+    {
+        StartPlayback();
+    }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
@@ -79,9 +80,9 @@ public class GameController : MonoBehaviour
 
     private void ClearTargetTexture()
     {
-        var rt = vPlayer.targetTexture;
+        RenderTexture rt = vPlayer.targetTexture;
         if (rt == null) return;
-        var prev = RenderTexture.active;
+        RenderTexture prev = RenderTexture.active;
         RenderTexture.active = rt;
         GL.Clear(true, true, Color.black);
         RenderTexture.active = prev;
@@ -94,12 +95,11 @@ public class GameController : MonoBehaviour
         if (vPlayer.isPrepared)
         {
             StartPlayback();
-        }
-        else
-        {
-            vPlayer.Prepare();
+            SoundManager.Instance.Play("SignalLoss");
+            return;
         }
 
+        vPlayer.Prepare();
         SoundManager.Instance.Play("SignalLoss");
     }
 
@@ -128,13 +128,13 @@ public class GameController : MonoBehaviour
         {
             SoundManager.Instance.Play("Confirm");
 
-            if (SceneTransitioner.Instance.GetCurrentScene(SceneTransitioner.SceneName.StageSelect))
+            if (SceneTransitioner.Instance.GetCurrentScene(SceneName.StageSelect))
             {
-                SceneTransitioner.Instance.LoadSceneSlide(SceneTransitioner.SceneName.Title);
+                SceneTransitioner.Instance.LoadSceneSlide(SceneName.Title);
                 return;
             }
 
-            SceneTransitioner.Instance.LoadSceneSlide(SceneTransitioner.SceneName.StageSelect);
+            SceneTransitioner.Instance.LoadSceneSlide(SceneName.StageSelect);
         }
     }
 
@@ -144,11 +144,11 @@ public class GameController : MonoBehaviour
 
         if (isTransitioning)
         {
-            Go();            //再生中ならスキップ
+            Go(); //再生中ならスキップ
         }
         else
         {
-            RestartScene();  //そうでなければ開始
+            RestartScene(); //そうでなければ開始
         }
     }
 
@@ -158,6 +158,7 @@ public class GameController : MonoBehaviour
         {
             return;
         }
+
         Go();
     }
 
@@ -176,7 +177,7 @@ public class GameController : MonoBehaviour
         Time.timeScale = 1f;
 
         if (SceneTransitioner.Instance != null &&
-            SceneTransitioner.Instance.GetCurrentScene(SceneTransitioner.SceneName.StageSelect))
+            SceneTransitioner.Instance.GetCurrentScene(SceneName.StageSelect))
         {
             isTransitioning = false;
             hasLoaded = false;
@@ -192,7 +193,7 @@ public class GameController : MonoBehaviour
         Debug.LogError(msg);
     }
 
-    IEnumerator Failsafe()
+    private IEnumerator Failsafe()
     {
         //動画の長さ + 余裕。lengthはPrepare後でないと0なので保険を入れる
         float wait = vPlayer.length > 0.01f
@@ -207,7 +208,7 @@ public class GameController : MonoBehaviour
 
     private void OnDestroy()
     {
-        if (vPlayer == null) return;   //購読していないインスタンスは何もしない
+        if (vPlayer == null) return; //購読していないインスタンスは何もしない
 
         vPlayer.loopPointReached -= OnTransitionComplete;
         vPlayer.errorReceived -= OnError;

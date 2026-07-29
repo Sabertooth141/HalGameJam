@@ -182,9 +182,10 @@ public class StartController : MonoBehaviour
                 return;
             }
 
+            isLaunched = true;
+
             Launch();
             launchSpeed = minLaunchSpeed;
-            isLaunched = true;
         }
     }
 
