@@ -33,15 +33,7 @@ public class GoalController : MonoBehaviour
     //----------------------------
     private void Awake()
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
         Instance = this;
-
-        // ÉVÅ[ÉìÇÇ‹ÇΩÇ¢Ç≈Ç‡îjä¸Ç≥ÇÍÇ»Ç¢ÇÊÇ§Ç…ÇµÇΩÇ¢èÍçá
-        // DontDestroyOnLoad(gameObject);
     }
 
     void Start()

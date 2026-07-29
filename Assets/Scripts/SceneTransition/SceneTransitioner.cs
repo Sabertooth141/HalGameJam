@@ -72,15 +72,11 @@ public class SceneTransitioner : MonoBehaviour
     //----------------------------
     void Awake()
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-        Instance = this;
+        canvas.sortingOrder = 100;
+        
+        if (Instance != null && Instance != this) return;
 
-        // シーンをまたいでも破棄されないようにしたい場合
-        DontDestroyOnLoad(gameObject);
+        Instance = this;
 
         //初期値はα値を0にして透明にしておく
         Color color = fadeImg.color;
@@ -279,6 +275,9 @@ public class SceneTransitioner : MonoBehaviour
             slideImg.rectTransform.localPosition = Vector3.Lerp(startPos, endPos, t); //線形補間で位置を更新
             yield return null; //1フレーム停止する
         }
+
+        currentScene = name;
+        Debug.Log($"loaded, フェードイン開始 alpha={fadeImg.color.a} order={canvas.sortingOrder}");
         isSceneTransitioning = false; //シーン遷移中フラグを下ろす
     }
 

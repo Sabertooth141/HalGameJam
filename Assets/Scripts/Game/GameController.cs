@@ -22,6 +22,8 @@ public class GameController : MonoBehaviour
 
     private void Awake()
     {
+        vPlayer = GetComponent<VideoPlayer>();   //先に取っておく
+
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
@@ -30,18 +32,14 @@ public class GameController : MonoBehaviour
 
         Instance = this;
 
-        vPlayer = GetComponent<VideoPlayer>();
-        vPlayer.isLooping = false; // これがtrueだとloopPointReachedが呼ばれない
+        vPlayer.isLooping = false;
         vPlayer.playOnAwake = false;
         vPlayer.loopPointReached += OnTransitionComplete;
         vPlayer.errorReceived += OnError;
         vPlayer.prepareCompleted += OnPrepared;
 
         ClearTargetTexture();
-        if (videoOverlay != null)
-        {
-            videoOverlay.SetActive(false);
-        }
+        if (videoOverlay != null) videoOverlay.SetActive(false);
     }
 
     private void Start()
@@ -93,6 +91,9 @@ public class GameController : MonoBehaviour
 
     private void Update()
     {
+        if (kb == null) kb = Keyboard.current;
+        if (kb == null) return;
+
         HandleRetry();
         HandleReturn();
     }
@@ -111,7 +112,7 @@ public class GameController : MonoBehaviour
         {
             RestartScene();
         }
-        if (isTransitioning && kb.rKey.wasPressedThisFrame)
+        if (isTransitioning && kb.spaceKey.wasPressedThisFrame)
         {
             Go();
         }
@@ -155,8 +156,12 @@ public class GameController : MonoBehaviour
 
     private void OnDestroy()
     {
+        if (vPlayer == null) return;   //購読していないインスタンスは何もしない
+
         vPlayer.loopPointReached -= OnTransitionComplete;
         vPlayer.errorReceived -= OnError;
         vPlayer.prepareCompleted -= OnPrepared;
+
+        if (Instance == this) Instance = null;
     }
 }

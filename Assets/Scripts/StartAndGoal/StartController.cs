@@ -77,16 +77,7 @@ public class StartController : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
         Instance = this;
-
-        // ÉVÅ[ÉìÇÇ‹ÇΩÇ¢Ç≈Ç‡îjä¸Ç≥ÇÍÇ»Ç¢ÇÊÇ§Ç…ÇµÇΩÇ¢èÍçá
-        // DontDestroyOnLoad(gameObject);
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created

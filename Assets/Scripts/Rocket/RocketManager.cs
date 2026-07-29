@@ -58,15 +58,8 @@ public class RocketManager : MonoBehaviour
     //----------------------------
     private void Awake()
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
+        if (Instance != null && Instance != this) return;
         Instance = this;
-
-        // ÉVÅ[ÉìÇÇ‹ÇΩÇ¢Ç≈Ç‡îjä¸Ç≥ÇÍÇ»Ç¢ÇÊÇ§Ç…ÇµÇΩÇ¢èÍçá
-        // DontDestroyOnLoad(gameObject);
     }
 
     //ìoò^

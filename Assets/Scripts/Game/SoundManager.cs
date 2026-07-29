@@ -20,14 +20,9 @@ public class SoundManager : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
+        if (Instance != null && Instance != this) return;
 
         Instance = this;
-        DontDestroyOnLoad(gameObject);
     }
 
     private void Start()
